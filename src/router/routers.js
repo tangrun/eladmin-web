@@ -1,14 +1,39 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../layout/index'
+import Registration from '@/views/a/registration/index.vue'
 
 Vue.use(Router)
 
 export const constantRouterMap = [
-  { path: '/login',
+  {
+    path: '/login',
     meta: { title: '登录', noCache: true },
     component: (resolve) => require(['@/views/login'], resolve),
     hidden: true
+  },
+  {
+    path: '/registration',
+    component: Registration,
+    children: [
+      {
+        path: 'sociaApply',
+        component: (resolve) => require(['@/views/a/registration/SocialApply.vue'], resolve),
+        name: 'SocialApply',
+        meta: { title: '社会组织注册', icon: 'index', affix: true, noCache: true }
+      },
+      {
+        path: 'expertApply',
+        component: (resolve) => require(['@/views/a/registration/ExpertApply.vue'], resolve),
+        name: 'ExpertApply',
+        meta: { title: '专家注册', icon: 'index', affix: true, noCache: true }
+      }, {
+        path: 'competentApply',
+        component: (resolve) => require(['@/views/a/registration/CompetentApply.vue'], resolve),
+        name: 'CompetentApply',
+        meta: { title: '主管机构注册', icon: 'index', affix: true, noCache: true }
+      }
+    ]
   },
   {
     path: '/404',
