@@ -14,12 +14,13 @@
 
 <script>
 import Logo from '@/assets/images/logo.png'
+import Config from '@/settings'
 
 export default {
   name: 'RegistrationIndex',
   data() {
     return {
-      title: '后台管理系统',
+      title: Config.title,
       logo: Logo
     }
   }

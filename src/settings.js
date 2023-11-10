@@ -1,8 +1,8 @@
-module.exports = {
+const Config = {
   /**
    * @description 网站标题
    */
-  title: '后台管理系统',
+  title: '社会组织项目服务平台',
   /**
    * @description 是否显示 tagsView
    */
@@ -45,3 +45,4 @@ module.exports = {
    */
   caseNumber: ''
 }
+module.exports = Config
