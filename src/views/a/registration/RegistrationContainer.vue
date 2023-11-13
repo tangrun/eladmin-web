@@ -17,7 +17,7 @@ import Logo from '@/assets/images/logo.png'
 import Config from '@/settings'
 
 export default {
-  name: 'RegistrationIndex',
+  name: 'RegistrationContainer',
   data() {
     return {
       title: Config.title,

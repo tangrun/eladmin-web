@@ -1,5 +1,5 @@
 <template>
-  <div class="login" :style="'background-image:url('+ Background +');'">
+  <div class="login" :style="'background-image:url('+ Background +');background-position: right;'">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" label-position="left" label-width="0px" class="login-form">
       <h3 class="title">{{ title }}</h3>
       <el-form-item prop="username">
@@ -29,6 +29,9 @@
           <span v-else>登 录 中...</span>
         </el-button>
       </el-form-item>
+      <router-link to="/registration" style="text-align: end;text-decoration: none">
+        <h5 style="color: #1890ff;text-decoration: none;">注册</h5>
+      </router-link>
     </el-form>
     <!--  底部  -->
     <div v-if="$store.state.settings.showFooter" id="el-login-footer">
@@ -186,6 +189,10 @@ export default {
     background: #ffffff;
     width: 385px;
     padding: 25px 25px 5px 25px;
+
+    position: absolute;
+    right: 30px;
+
     .el-input {
       height: 38px;
       input {

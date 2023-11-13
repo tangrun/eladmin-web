@@ -1,5 +1,5 @@
 <template>
-  <el-card header="专家注册" style="width: 80%">
+  <el-card header="专家注册" style="width: 60%">
     <el-form ref="form" :model="formData" :rules="formRules" label-width="150px">
       <el-form-item label="姓名" :required="true" prop="name">
         <el-input v-model="formData.name" />

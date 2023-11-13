@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../layout/index'
-import Registration from '@/views/a/registration/index.vue'
+import RegistrationContainer from '@/views/a/registration/RegistrationContainer.vue'
 
 Vue.use(Router)
 
@@ -14,8 +14,15 @@ export const constantRouterMap = [
   },
   {
     path: '/registration',
-    component: Registration,
+    component: RegistrationContainer,
+    redirect: '/registration/index',
     children: [
+      {
+        path: 'index',
+        component: (resolve) => require(['@/views/a/registration/RegistrationIndex.vue'], resolve),
+        name: 'registrationIndex',
+        meta: { title: '注册', icon: 'index', affix: true, noCache: true }
+      },
       {
         path: 'sociaApply',
         component: (resolve) => require(['@/views/a/registration/SocialApply.vue'], resolve),
@@ -59,8 +66,15 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/homePage',
+    // redirect: '/dashboard',
     children: [
+      {
+        path: 'homePage',
+        component: (resolve) => require(['@/views/a/HomePage.vue'], resolve),
+        name: 'HomePage',
+        meta: { title: '首页', icon: 'index', affix: true, noCache: true }
+      },
       {
         path: 'dashboard',
         component: (resolve) => require(['@/views/home'], resolve),

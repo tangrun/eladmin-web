@@ -1,5 +1,5 @@
 <template>
-  <el-card header="主管机构注册" style="width: 80%">
+  <el-card header="主管机构注册" style="width: 60%">
     <el-form ref="form" :model="formData" :rules="formRules" label-position="left" label-width="150px">
       <el-form-item label="行政级别" :required="true" prop="administrativeLevel">
         <el-select
