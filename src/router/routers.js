@@ -64,6 +64,37 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/project',
+    component: Layout,
+    redirect: '/project/list',
+    children: [
+      {
+        path: 'list',
+        component: (resolve) => require(['@/views/a/project/ProjectList.vue'], resolve),
+        name: 'ProjectList',
+        meta: { title: '项目列表', icon: 'index', affix: true, noCache: true }
+      },
+      {
+        path: 'create',
+        component: (resolve) => require(['@/views/a/project/CreateProject.vue'], resolve),
+        name: 'CreateProject',
+        meta: { title: '项目创建', icon: 'index', affix: true, noCache: true }
+      },
+      {
+        path: 'detail/:id',
+        component: (resolve) => require(['@/views/a/project/ProjectDetail.vue'], resolve),
+        name: 'CreateProject',
+        meta: { title: '项目详情', icon: 'index', affix: true, noCache: true }
+      },
+      {
+        path: 'createPlan',
+        component: (resolve) => require(['@/views/a/project/CreatePlanProject.vue'], resolve),
+        name: 'CreatePlanProject',
+        meta: { title: '储备项目创建', icon: 'index', affix: true, noCache: true }
+      }
+    ]
+  },
+  {
     path: '/',
     component: Layout,
     redirect: '/homePage',
