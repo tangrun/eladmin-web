@@ -19,7 +19,7 @@ import './assets/styles/index.scss'
 
 import App from './App'
 import store from './store'
-import router from './router/routers'
+import router, { initDev } from './router/routers'
 
 import './assets/icons' // icon
 import './router/index' // permission control
@@ -39,3 +39,4 @@ new Vue({
   store,
   render: h => h(App)
 })
+initDev()
