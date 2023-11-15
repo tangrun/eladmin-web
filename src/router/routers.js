@@ -1,58 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '../layout/index'
-import store from '@/store'
 
 Vue.use(Router)
-
-const sidebarRoutes = [
-  {
-    alwaysShow: true,
-    path: '/homePage',
-    meta: { icon: 'system', noCache: true, title: '首页' },
-    name: 'HomePage',
-    component: 'Layout',
-    redirect: 'noredirect'
-  }, {
-    alwaysShow: true,
-    path: '/project',
-    meta: { icon: 'system', noCache: true, title: '项目管理' },
-    name: 'Project',
-    component: 'Layout',
-    redirect: '/project/list',
-    children: [
-      {
-        path: 'list',
-        component: '/a/project/ProjectList',
-        name: 'ProjectList',
-        meta: { title: '项目列表', icon: 'index', affix: true, noCache: true }
-      },
-      {
-        path: 'create',
-        component: '@/views/a/project/CreateProject.vue',
-        name: 'CreateProject',
-        meta: { title: '项目创建', icon: 'index', affix: true, noCache: true }
-      },
-      {
-        path: 'detail/:id',
-        component: '@/views/a/project/ProjectDetail.vue',
-        name: 'CreateProject',
-        meta: { title: '项目详情', icon: 'index', affix: true, noCache: true }
-      },
-      {
-        path: 'createPlan',
-        component: '@/views/a/project/CreatePlanProject.vue',
-        name: 'CreatePlanProject',
-        meta: { title: '储备项目创建', icon: 'index', affix: true, noCache: true }
-      }
-    ]
-  }
-]
-
-export function initDev() {
-  console.log('-----------------ffffffffffff')
-  store.dispatch('SetSidebarRouters', sidebarRoutes)
-}
 
 export const constantRouterMap = [
   {
@@ -61,36 +11,6 @@ export const constantRouterMap = [
     component: (resolve) => require(['@/views/login'], resolve),
     hidden: true
   },
-  // {
-  //   path: '/registration',
-  //   component: (resolve) => require(['@/views/a/registration/RegistrationContainer.vue'], resolve),
-  //   redirect: '/registration/index',
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       component: (resolve) => require(['@/views/a/registration/RegistrationIndex.vue'], resolve),
-  //       name: 'registrationIndex',
-  //       meta: { title: '注册', icon: 'index', affix: true, noCache: true }
-  //     },
-  //     {
-  //       path: 'sociaApply',
-  //       component: (resolve) => require(['@/views/a/registration/SocialApply.vue'], resolve),
-  //       name: 'SocialApply',
-  //       meta: { title: '社会组织注册', icon: 'index', affix: true, noCache: true }
-  //     },
-  //     {
-  //       path: 'expertApply',
-  //       component: (resolve) => require(['@/views/a/registration/ExpertApply.vue'], resolve),
-  //       name: 'ExpertApply',
-  //       meta: { title: '专家注册', icon: 'index', affix: true, noCache: true }
-  //     }, {
-  //       path: 'competentApply',
-  //       component: (resolve) => require(['@/views/a/registration/CompetentApply.vue'], resolve),
-  //       name: 'CompetentApply',
-  //       meta: { title: '主管机构注册', icon: 'index', affix: true, noCache: true }
-  //     }
-  //   ]
-  // },
   {
     path: '/404',
     component: (resolve) => require(['@/views/features/404'], resolve),
@@ -112,37 +32,6 @@ export const constantRouterMap = [
       }
     ]
   },
-  // {
-  //   path: '/project',
-  //   component: Layout,
-  //   redirect: '/project/list',
-  //   children: [
-  //     {
-  //       path: 'list',
-  //       component: (resolve) => require(['@/views/a/project/ProjectList.vue'], resolve),
-  //       name: 'ProjectList',
-  //       meta: { title: '项目列表', icon: 'index', affix: true, noCache: true }
-  //     },
-  //     {
-  //       path: 'create',
-  //       component: (resolve) => require(['@/views/a/project/CreateProject.vue'], resolve),
-  //       name: 'CreateProject',
-  //       meta: { title: '项目创建', icon: 'index', affix: true, noCache: true }
-  //     },
-  //     {
-  //       path: 'detail/:id',
-  //       component: (resolve) => require(['@/views/a/project/ProjectDetail.vue'], resolve),
-  //       name: 'CreateProject',
-  //       meta: { title: '项目详情', icon: 'index', affix: true, noCache: true }
-  //     },
-  //     {
-  //       path: 'createPlan',
-  //       component: (resolve) => require(['@/views/a/project/CreatePlanProject.vue'], resolve),
-  //       name: 'CreatePlanProject',
-  //       meta: { title: '储备项目创建', icon: 'index', affix: true, noCache: true }
-  //     }
-  //   ]
-  // },
   {
     path: '/',
     component: Layout,
@@ -154,13 +43,13 @@ export const constantRouterMap = [
         component: (resolve) => require(['@/views/a/HomePage.vue'], resolve),
         name: 'HomePage',
         meta: { title: '首页', icon: 'index', affix: true, noCache: true }
-      },
-      {
-        path: 'dashboard',
-        component: (resolve) => require(['@/views/home'], resolve),
-        name: 'Dashboard',
-        meta: { title: '首页', icon: 'index', affix: true, noCache: true }
       }
+      // , {
+      //   path: 'dashboard',
+      //   component: (resolve) => require(['@/views/home'], resolve),
+      //   name: 'Dashboard',
+      //   meta: { title: '首页', icon: 'index', affix: true, noCache: true }
+      // }
     ]
   },
   {

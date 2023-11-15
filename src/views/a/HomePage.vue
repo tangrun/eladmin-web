@@ -1,7 +1,7 @@
 <template>
   <el-row>
     <el-row justify="center" :gutter="20" type="flex" style="margin-top: 20px">
-      <el-col span="11">
+      <el-col :span="11">
         <el-card header="招标项目区" class="card" :body-style="cardStyle">
           <el-table :data="tenderingProjectList" class="table">
             <el-table-column :show-overflow-tooltip="true" prop="number" width="80" label="项目编号" />
@@ -18,7 +18,7 @@
           />
         </el-card>
       </el-col>
-      <el-col span="11">
+      <el-col :span="11">
         <el-card header="储备项目区" class="card" :body-style="cardStyle">
           <el-table :data="reserveProjectList" class="table">
             <el-table-column :show-overflow-tooltip="true" prop="number" width="80" label="项目编号" />
@@ -37,7 +37,7 @@
       </el-col>
     </el-row>
     <el-row justify="center" :gutter="20" type="flex" style="margin-top: 20px; margin-bottom: 50px">
-      <el-col span="11">
+      <el-col :span="11">
         <el-card header="待办提示区" class="card" :body-style="cardStyle">
           <el-table :data="todoList" class="table">
             <el-table-column :show-overflow-tooltip="true" prop="title" min-width="200" label="待办事项" />
@@ -53,7 +53,7 @@
           />
         </el-card>
       </el-col>
-      <el-col span="11">
+      <el-col :span="11">
         <el-card header="预警提示区" class="card" :body-style="cardStyle">
           <el-table :data="warningList" class="table" row>
             <el-table-column :show-overflow-tooltip="true" prop="title" min-width="200" label="待办事项" />

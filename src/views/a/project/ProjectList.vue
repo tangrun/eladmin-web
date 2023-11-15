@@ -87,7 +87,7 @@
         <el-table-column :show-overflow-tooltip="true" prop="projectCode" min-width="80" label="项目编号" />
         <el-table-column :show-overflow-tooltip="true" prop="projectName" min-width="200" label="项目名称">
           <template slot-scope="scope">
-            <router-link :to="'/project/detail/'+scope.row.id">
+            <router-link :to="$router.currentRoute.path+'/'+scope.row.id">
               <span>{{ scope.row.projectName }}</span>
             </router-link>
           </template>

@@ -1,5 +1,5 @@
 <template>
-  <el-card header="新建项目" style="margin: 20px; margin-bottom: 50px">
+  <el-card header="项目发布" style="margin: 20px; margin-bottom: 50px">
     <el-form
       ref="form"
       :inline="false"
