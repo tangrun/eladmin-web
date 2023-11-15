@@ -1,87 +1,88 @@
 <template>
   <el-card header="主管机构注册" style="width: 60%">
     <el-form ref="form" :model="formData" :rules="formRules" label-position="left" label-width="150px">
-      <el-form-item label="行政级别" :required="true" prop="administrativeLevel">
-        <el-select
-          v-model="formData.administrativeLevel"
-          placeholder="请选择行政级别"
-        >
-          <el-option
-            v-for="item in optionsAdministrativeLevel"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-cascader
-          v-model="formData.administrativeArea"
-          :onchange="onAdministrativeAreaChange"
-          :options="cityOptions"
-          :props="cityOptionsProps"
-          :clearable="true"
-          show-all-levels="true"
-          :filterable="true"
-        />
-      </el-form-item>
-      <el-form-item v-if="formData.administrativeLevel >= 2 " label="行政区域" prop="administrativeArea">
-        <el-select
-          v-if="formData.administrativeLevel >= 2 "
-          v-model="formData.province"
-          placeholder="请选择省"
-          prop="description"
-        >
-          <el-option
-            v-for="item in optionsAdministrativeLevel"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <el-select
-          v-if="formData.administrativeLevel >= 3 "
-          v-model="formData.city"
-          placeholder="请选择市"
-          prop="description1"
-        >
-          <el-option
-            v-for="item in optionsAdministrativeLevel"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <el-select v-if="formData.administrativeLevel >= 4 " v-model="formData.county" placeholder="请选择县/区">
-          <el-option
-            v-for="item in optionsAdministrativeLevel"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <el-select v-if="formData.administrativeLevel >= 5 " v-model="formData.street" placeholder="请选择街道">
-          <el-option
-            v-for="item in optionsAdministrativeLevel"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-        <el-select v-if="formData.administrativeLevel >= 6 " v-model="formData.community" placeholder="请选择社区">
-          <el-option
-            v-for="item in optionsAdministrativeLevel"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
+<!--      <el-form-item label="行政级别" :required="true" prop="administrativeLevel">-->
+<!--        <el-select-->
+<!--          v-model="formData.administrativeLevel"-->
+<!--          placeholder="请选择行政级别"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="item in optionsAdministrativeLevel"-->
+<!--            :key="item.value"-->
+<!--            :label="item.label"-->
+<!--            :value="item.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item v-if="formData.administrativeLevel >= 2 " label="行政区域" prop="administrativeArea">-->
+<!--        <el-select-->
+<!--          v-if="formData.administrativeLevel >= 2 "-->
+<!--          v-model="formData.province"-->
+<!--          placeholder="请选择省"-->
+<!--          prop="description"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="item in optionsAdministrativeLevel"-->
+<!--            :key="item.value"-->
+<!--            :label="item.label"-->
+<!--            :value="item.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--        <el-select-->
+<!--          v-if="formData.administrativeLevel >= 3 "-->
+<!--          v-model="formData.city"-->
+<!--          placeholder="请选择市"-->
+<!--          prop="description1"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="item in optionsAdministrativeLevel"-->
+<!--            :key="item.value"-->
+<!--            :label="item.label"-->
+<!--            :value="item.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--        <el-select v-if="formData.administrativeLevel >= 4 " v-model="formData.county" placeholder="请选择县/区">-->
+<!--          <el-option-->
+<!--            v-for="item in optionsAdministrativeLevel"-->
+<!--            :key="item.value"-->
+<!--            :label="item.label"-->
+<!--            :value="item.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--        <el-select v-if="formData.administrativeLevel >= 5 " v-model="formData.street" placeholder="请选择街道">-->
+<!--          <el-option-->
+<!--            v-for="item in optionsAdministrativeLevel"-->
+<!--            :key="item.value"-->
+<!--            :label="item.label"-->
+<!--            :value="item.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--        <el-select v-if="formData.administrativeLevel >= 6 " v-model="formData.community" placeholder="请选择社区">-->
+<!--          <el-option-->
+<!--            v-for="item in optionsAdministrativeLevel"-->
+<!--            :key="item.value"-->
+<!--            :label="item.label"-->
+<!--            :value="item.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item label="机构名称" :required="true" prop="name">
         <el-input v-model="formData.name" />
       </el-form-item>
       <el-form-item label="机构简介" :required="false" prop="description">
         <el-input v-model="formData.description" />
+      </el-form-item>
+      <el-form-item label="行政级别" :required="true" prop="administrativeLevel">
+        <el-cascader
+          style="width: 100%"
+          v-model="formData.administrativeArea"
+          :onchange="onAdministrativeAreaChange"
+          :options="cityOptions"
+          :props="cityOptionsProps"
+          :clearable="true"
+          :show-all-levels="true"
+          :filterable="true"
+        />
       </el-form-item>
       <el-form-item label="机构电话" :required="false" prop="phone">
         <el-input v-model="formData.phone" />
@@ -106,9 +107,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm()">提交</el-button>
-        <router-link key="collapse" class="navbar-logo-link" to="/">
-          <el-button>返回</el-button>
-        </router-link>
+        <el-button @click="$router.back()">返回</el-button>
       </el-form-item>
     </el-form>
   </el-card>

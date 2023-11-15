@@ -53,6 +53,40 @@ export const constantRouterMap = [
     ]
   },
   {
+    path: '/registration',
+    component: (resolve) => require(['@/views/a/registration/RegistrationContainer.vue'], resolve),
+    redirect: '/registration/index',
+    children: [
+      {
+        path: 'index',
+        component: (resolve) => require(['@/views/a/registration/RegistrationIndex.vue'], resolve),
+        hidden: true,
+        name: 'registrationIndex',
+        meta: { title: '注册', icon: 'index', affix: false, noCache: false }
+      },
+      {
+        path: 'sociaApply',
+        component: (resolve) => require(['@/views/a/registration/SocialApply.vue'], resolve),
+        hidden: true,
+        name: 'SocialApply',
+        meta: { title: '社会组织注册', icon: 'index', affix: false, noCache: false }
+      },
+      {
+        path: 'expertApply',
+        component: (resolve) => require(['@/views/a/registration/ExpertApply.vue'], resolve),
+        hidden: true,
+        name: 'ExpertApply',
+        meta: { title: '专家注册', icon: 'index', affix: false, noCache: true }
+      }, {
+        path: 'competentApply',
+        component: (resolve) => require(['@/views/a/registration/CompetentApply.vue'], resolve),
+        hidden: true,
+        name: 'CompetentApply',
+        meta: { title: '主管机构注册', icon: 'index', affix: false, noCache: true }
+      }
+    ]
+  },
+  {
     path: '/user',
     component: Layout,
     hidden: true,

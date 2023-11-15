@@ -44,6 +44,33 @@ new Vue({
 const routes = [
   {
     alwaysShow: true,
+    path: '/registrationAudit',
+    component: 'Layout',
+    meta: { icon: 'system', noCache: true, title: '注册审核' },
+    redirect: '/registration/index',
+    children: [
+      {
+        path: '/competent/applyList',
+        component: 'registration/competent/ApplyList',
+        name: 'CompetentApplyList',
+        meta: { title: '主管机构注册审核', icon: 'index', affix: false, noCache: true }
+      },
+      {
+        path: '/social/applyList',
+        component: 'registration/social/ApplyList',
+        name: 'SocialApplyList',
+        meta: { title: '社会组织注册审核', icon: 'index', affix: false, noCache: true }
+      },
+      {
+        path: '/expert/applyList',
+        component: 'registration/expert/ApplyList',
+        name: 'ExpertApplyList',
+        meta: { title: '评审专家注册审核', icon: 'index', affix: false, noCache: true }
+      }
+    ]
+  },
+  {
+    alwaysShow: true,
     path: '/project',
     meta: { icon: 'system', noCache: true, title: '项目管理' },
     component: 'Layout',
@@ -152,41 +179,6 @@ const routes = [
         hidden: true,
         component: 'project/supervise',
         name: 'ProjectSupervise'
-      }
-    ]
-  },
-  {
-    path: '/registration',
-    component: 'a/registration/RegistrationContainer',
-    hidden: true,
-    redirect: '/registration/index',
-    children: [
-      {
-        path: 'index',
-        component: 'a/registration/RegistrationIndex',
-        hidden: true,
-        name: 'registrationIndex',
-        meta: { title: '注册', icon: 'index', affix: false, noCache: true }
-      },
-      {
-        path: 'sociaApply',
-        component: 'a/registration/SocialApply',
-        hidden: true,
-        name: 'SocialApply',
-        meta: { title: '社会组织注册', icon: 'index', affix: false, noCache: true }
-      },
-      {
-        path: 'expertApply',
-        component: 'a/registration/ExpertApply',
-        hidden: true,
-        name: 'ExpertApply',
-        meta: { title: '专家注册', icon: 'index', affix: false, noCache: true }
-      }, {
-        path: 'competentApply',
-        component: 'a/registration/CompetentApply',
-        hidden: true,
-        name: 'CompetentApply',
-        meta: { title: '主管机构注册', icon: 'index', affix: false, noCache: true }
       }
     ]
   }

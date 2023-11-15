@@ -97,9 +97,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm()">提交</el-button>
-        <router-link key="collapse" class="navbar-logo-link" to="/">
-          <el-button>返回</el-button>
-        </router-link>
+        <el-button @click="$router.back()">返回</el-button>
       </el-form-item>
     </el-form>
   </el-card>
