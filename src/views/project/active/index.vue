@@ -7,37 +7,43 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="ID">
-            <el-input v-model="form.planId" style="width: 370px;" />
+          <el-form-item label="活动ID">
+            <el-input v-model="form.activeId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="项目ID" prop="projectId">
             <el-input v-model="form.projectId" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="目标名称" prop="name">
+          <el-form-item label="项目目标ID">
+            <el-input v-model="form.planId" style="width: 370px;" />
+          </el-form-item>
+          <el-form-item label="活动主题">
             <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="目标阶段：投入、产出、影响、成效">
-            <el-radio v-for="item in dict.target_status" :key="item.id" v-model="form.targetType" :label="item.value">{{ item.label }}</el-radio>
+          <el-form-item label="活动内容">
+            <el-input v-model="form.content" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="目标值">
-            <el-input v-model="form.targetNum" style="width: 370px;" />
+          <el-form-item label="活动时间">
+            <el-input v-model="form.activeTime" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="权重">
-            <el-input v-model="form.weight" style="width: 370px;" />
+          <el-form-item label="活动地点">
+            <el-input v-model="form.venue" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="开始时间">
-            <el-input v-model="form.startTime" style="width: 370px;" />
+          <el-form-item label="参与活动人数">
+            <el-input v-model="form.num" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="结束时间">
-            <el-input v-model="form.endTime" style="width: 370px;" />
+          <el-form-item label="活动成效">
+            <el-input v-model="form.effect" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="备注">
-            <el-input v-model="form.remark" style="width: 370px;" />
+          <el-form-item label="活动费用">
+            <el-input v-model="form.fee" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="录入人">
+          <el-form-item label="是否验收">
+            <el-input v-model="form.ischecked" style="width: 370px;" />
+          </el-form-item>
+          <el-form-item label="创建人">
             <el-input v-model="form.createBy" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="录入时间">
+          <el-form-item label="创建时间">
             <el-input v-model="form.createTime" style="width: 370px;" />
           </el-form-item>
         </el-form>
@@ -49,22 +55,29 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <!--<el-table-column prop="planId" label="ID" />-->
+        <!--<el-table-column prop="activeId" label="活动ID" />-->
         <!--<el-table-column prop="projectId" label="项目ID" />-->
-        <el-table-column prop="name" label="目标名称" />
-        <el-table-column prop="targetType" label="目标阶段">
+        <!--<el-table-column prop="planId" label="项目目标ID" />-->
+        <el-table-column prop="name" label="活动主题" />
+        <el-table-column prop="content" label="活动内容" />
+        <el-table-column prop="activeTime" label="活动时间" />
+        <el-table-column prop="venue" label="活动地点" />
+        <el-table-column prop="num" label="参与活动人数" />
+        <el-table-column prop="effect" label="活动成效" />
+        <el-table-column prop="fee" label="活动费用" />
+        <el-table-column prop="ischecked" label="是否验收" align="center">
           <template slot-scope="scope">
-            {{ dict.label.target_status[scope.row.targetType] }}
+            <el-switch
+              v-model="scope.row.ischecked"
+              active-color="#409EFF"
+              inactive-color="#F56C6C"
+              @change="changeEnabled(scope.row, scope.row.ischecked)"
+            />
           </template>
         </el-table-column>
-        <el-table-column prop="targetNum" label="目标值" />
-        <el-table-column prop="weight" label="权重" />
-        <el-table-column prop="startTime" label="开始时间" />
-        <el-table-column prop="endTime" label="结束时间" />
-        <el-table-column prop="remark" label="备注" />
-        <el-table-column prop="createBy" label="录入人" />
-        <el-table-column prop="createTime" label="录入时间" />
-        <el-table-column v-if="checkPer(['admin','projectApplicationPlan:edit','projectApplicationPlan:del'])" label="操作" width="150px" align="center">
+        <!--<el-table-column prop="createBy" label="创建人" />-->
+        <!--<el-table-column prop="createTime" label="创建时间" />-->
+        <el-table-column v-if="checkPer(['admin','active:edit','active:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -80,38 +93,33 @@
 </template>
 
 <script>
-import crudProjectApplicationPlan from '@/api/project/plan'
+import crudActive from '@/api/project/active'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { planId: null, projectId: null, name: null, targetType: null, targetNum: null, weight: null, startTime: null, endTime: null, remark: null, createBy: null, createTime: null }
+const defaultForm = { activeId: null, projectId: null, planId: null, name: null, content: null, activeTime: null, venue: null, num: null, effect: null, fee: null, ischecked: null, createBy: null, createTime: null }
 export default {
-  name: 'ProjectApplicationPlan',
+  name: 'Active',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['target_status'],
   cruds() {
-    return CRUD({ title: 'plan', url: 'api/projectApplicationPlan', idField: 'planId', sort: 'planId,desc', crudMethod: { ...crudProjectApplicationPlan }})
+    return CRUD({ title: 'active', url: 'api/active', idField: 'activeId', sort: 'activeId,desc', crudMethod: { ...crudActive }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'projectApplicationPlan:add'],
-        edit: ['admin', 'projectApplicationPlan:edit'],
-        del: ['admin', 'projectApplicationPlan:del']
+        add: ['admin', 'active:add'],
+        edit: ['admin', 'active:edit'],
+        del: ['admin', 'active:del']
       },
       rules: {
         projectId: [
           { required: true, message: '项目ID不能为空', trigger: 'blur' }
-        ],
-        name: [
-          { required: true, message: '目标名称不能为空', trigger: 'blur' }
         ]
-      }
-    }
+      }    }
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据

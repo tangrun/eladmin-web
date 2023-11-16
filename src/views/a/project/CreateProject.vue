@@ -1,13 +1,19 @@
 <template>
-  <el-card header="项目发布" style="margin: 20px; margin-bottom: 50px">
+  <el-card header="项目发布" style="margin: 20px;width: 80%">
     <el-form
       ref="form"
       :inline="false"
       :model="createProjectForm"
       :rules="createProjectRules"
       size="small"
-      label-width="90px"
+      label-width="100px"
     >
+      <el-form-item label="项目计划" prop="projectPlan" required>
+        <el-input v-model="createProjectForm.projectPlan" />
+      </el-form-item>
+      <el-form-item label="上一级项目" prop="projectParent" required>
+        <el-input v-model="createProjectForm.projectParent" />
+      </el-form-item>
       <el-form-item label="项目名称" prop="projectName" required>
         <el-input v-model="createProjectForm.projectName" />
       </el-form-item>

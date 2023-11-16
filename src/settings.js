@@ -6,7 +6,7 @@ const Config = {
   /**
    * @description 是否显示 tagsView
    */
-  tagsView: true,
+  tagsView: false,
   /**
    * @description 固定头部
    */
@@ -39,7 +39,7 @@ const Config = {
    * 底部文字，支持html语法
    */
   // footerTxt: '© 2018-2022 Zheng Jie <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License 2.0</a>',
-  footerTxt: '© 2018-2023 成都小蓝科技',
+  footerTxt: '© 2018-2023 成都小蓝科技有限责任公司',
   /**
    * 备案号
    */

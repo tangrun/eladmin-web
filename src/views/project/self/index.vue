@@ -49,8 +49,8 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="selfId" label="自评ID" />
-        <el-table-column prop="projectId" label="项目ID" />
+        <!--<el-table-column prop="selfId" label="自评ID" />-->
+        <!--<el-table-column prop="projectId" label="项目ID" />-->
         <el-table-column prop="interim" label="评估期" />
         <el-table-column prop="summary" label="项目执行总结" />
         <el-table-column prop="nextRule" label="下一步工作安排记建议" />

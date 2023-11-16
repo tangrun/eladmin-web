@@ -58,20 +58,20 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="memberId" label="ID" />
+        <!--<el-table-column prop="memberId" label="ID" />-->
         <el-table-column prop="name" label="姓名" />
         <el-table-column prop="sex" label="性别" />
-        <el-table-column prop="age" label="年龄" />
+        <!--<el-table-column prop="age" label="年龄" />-->
         <el-table-column prop="title" label="职称" />
         <el-table-column prop="duties" label="项目职务" />
         <el-table-column prop="mobile" label="电话" />
         <el-table-column prop="email" label="邮箱" />
         <el-table-column prop="entryTime" label="任职开始时间" />
-        <el-table-column prop="education" label="学历" />
-        <el-table-column prop="speciality" label="专业" />
+        <!--<el-table-column prop="education" label="学历" />-->
+        <!--<el-table-column prop="speciality" label="专业" />-->
         <el-table-column prop="remark" label="备注" />
-        <el-table-column prop="createBy" label="录入人" />
-        <el-table-column prop="createTime" label="录入时间" />
+        <!--<el-table-column prop="createBy" label="录入人" />-->
+        <!--<el-table-column prop="createTime" label="录入时间" />-->
         <el-table-column v-if="checkPer(['admin','applicationTeam:edit','applicationTeam:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation

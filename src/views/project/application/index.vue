@@ -2,6 +2,44 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
+      <div v-if="crud.props.searchToggle">
+        <!-- 搜索 -->
+        <label class="el-form-item-label">项目类型</label>
+<!--        <el-input v-model="query.projectType" clearable placeholder="项目类型" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <el-select
+          v-model="query.projectType"
+          clearable
+          size="small"
+          placeholder="项目类型"
+          class="filter-item"
+          style="width: 185px"
+          @change="crud.toQuery"
+        >
+          <el-option
+            v-for="item in dict.project_type"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <el-select
+          v-model="query.category"
+          clearable
+          size="small"
+          placeholder="项目类别"
+          class="filter-item"
+          style="width: 185px"
+          @change="crud.toQuery"
+        >
+          <el-option
+            v-for="item in dict.project_category"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+        <rrOperation :crud="crud" />
+      </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
@@ -120,11 +158,19 @@
           </template>
         </el-table-column>
         <el-table-column prop="projectCode" label="项目编号" />
-        <el-table-column prop="categoryId" label="项目类别" />
+        <el-table-column prop="categoryId" label="项目类别">
+          <template slot-scope="scope">
+            {{ dict.label.project_category[scope.row.categoryId] }}
+          </template>
+        </el-table-column>
         <el-table-column prop="parentId" label="上级项目" />
-        <el-table-column prop="planId" label="项目计划及资助方" />
-        <el-table-column prop="leaderId" label="项目负责人" />
-        <el-table-column prop="projectType" label="项目类型" />
+        <el-table-column prop="planId" label="项目计划" />
+        <!--<el-table-column prop="leaderId" label="项目负责人" />-->
+        <el-table-column prop="projectType" label="项目类型">
+          <template slot-scope="scope">
+            {{ dict.label.project_type[scope.row.projectType] }}
+          </template>
+        </el-table-column>
         <!--<el-table-column prop="provinceId" label="省" />-->
         <!--<el-table-column prop="cityId" label="市" />-->
         <!--<el-table-column prop="countyId" label="区" />-->
@@ -134,13 +180,17 @@
         <el-table-column prop="endTime" label="结束时间" />
         <!--<el-table-column prop="overview" label="项目概述" />-->
         <!--<el-table-column prop="demand" label="需求分析" />-->
-        <el-table-column prop="remark" label="项目备注" />
+        <!--<el-table-column prop="remark" label="项目备注" />-->
         <el-table-column prop="projectStatus" label="项目状态">
           <template slot-scope="scope">
-            {{ dict.label.execution_status[scope.row.status] }}
+            {{ dict.label.execution_status[scope.row.projectStatus] }}
           </template>
         </el-table-column>
-        <el-table-column prop="approvalStatus" label="审批状态" />
+        <el-table-column prop="approvalStatus" label="审批状态" >
+          <template slot-scope="scope">
+            {{ dict.label.approval_status[scope.row.approvalStatus] }}
+          </template>
+        </el-table-column>
         <!-- 审批状态：0、未审批；1、审批通过；2、审批不通过-->
         <!--<el-table-column prop="proposal" label="项目书" />-->
         <!--<el-table-column prop="contract" label="项目合同" />-->
@@ -177,49 +227,15 @@ import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = {
-  projectId: null,
-  organId: null,
-  projectName: null,
-  projectCode: null,
-  categoryId: null,
-  parentId: null,
-  planId: null,
-  leaderId: null,
-  projectType: null,
-  provinceId: null,
-  cityId: null,
-  countyId: null,
-  streetId: null,
-  communityId: null,
-  startTime: null,
-  endTime: null,
-  overview: null,
-  demand: null,
-  remark: null,
-  projectStatus: null,
-  approvalStatus: null,
-  proposal: null,
-  contract: null,
-  amount: null,
-  counterpartFunding: null,
-  createTime: null,
-  createBy: null
-}
+const defaultForm = { projectId: null, organId: null, projectName: null, projectCode: null, categoryId: null, parentId: null, planId: null, leaderId: null, projectType: null, provinceId: null, cityId: null, countyId: null, streetId: null, communityId: null, startTime: null, endTime: null, overview: null, demand: null, remark: null, projectStatus: null, approvalStatus: null, proposal: null, contract: null, amount: null, counterpartFunding: null, createTime: null, createBy: null }
 export default {
   name: 'Application',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
+  dicts: ['project_category', 'target_status', 'execution_status', 'project_type', 'approval_status'],
   cruds() {
-    return CRUD({
-      title: 'application',
-      url: 'api/application',
-      idField: 'projectId',
-      sort: 'projectId,desc',
-      crudMethod: { ...crudApplication }
-    })
+    return CRUD({ title: 'application', url: 'api/application', idField: 'projectId', sort: 'projectId,desc', crudMethod: { ...crudApplication }})
   },
-  dicts: ['execution_status'],
   data() {
     return {
       permission: {
@@ -231,53 +247,11 @@ export default {
         projectId: [
           { required: true, message: 'ID不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      queryTypeOptions: [
+        { key: 'projectType', display_name: '项目类型' }
+      ]
     }
-  },
-  beforeCreate() {
-    console.log('---------')
-    console.log(this.crud)
-
-    const crud = this.crud
-    setTimeout(() => {
-      crud.loading = true
-
-      const data = {
-        totalElements: 4,
-        content: [{
-          projectCode: 'E01',
-          projectName: '一路有你老人关爱项目',
-          projectStatus: '未开始',
-          approvalStatus: '未审批'
-        }, {
-          projectCode: 'E02',
-          projectName: '乡音回味助农项目',
-          projectStatus: '执行中',
-          approvalStatus: '未审批'
-        }, {
-          projectCode: 'E03',
-          projectName: '非常6+1老人关爱项目',
-          projectStatus: '未开始',
-          approvalStatus: '未审批'
-        }, {
-          projectCode: 'E04',
-          projectName: '走进历史文化项目',
-          projectStatus: '未开始',
-          approvalStatus: '未审批'
-        }]
-      }
-
-      const table = crud.getTable()
-      if (table && table.lazy) { // 懒加载子节点数据，清掉已加载的数据
-        table.store.states.treeData = {}
-        table.store.states.lazyTreeNodeMap = {}
-      }
-      crud.page.total = data.totalElements
-      crud.data = data.content
-      crud.resetDataStatus()
-
-      crud.loading = false
-    }, 1000)
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据

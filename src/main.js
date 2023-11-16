@@ -43,6 +43,20 @@ new Vue({
 
 const routes = [
   {
+    alwaysShow: false,
+    path: '/user',
+    component: 'Layout',
+    meta: { icon: 'system', noCache: true, title: '用户管理' },
+    children: [
+      {
+        path: 'list',
+        component: 'a/user/UserList',
+        name: 'UserList',
+        meta: { icon: 'system', noCache: true, affix: false, title: '用户管理' }
+      }
+    ]
+  },
+  {
     alwaysShow: true,
     path: '/registrationAudit',
     component: 'Layout',
@@ -71,6 +85,26 @@ const routes = [
   },
   {
     alwaysShow: true,
+    path: '/projectPlan',
+    meta: { icon: 'system', noCache: true, title: '项目计划' },
+    component: 'Layout',
+    children: [
+      {
+        path: 'publish',
+        component: 'a/project/CreatePlanProject',
+        name: 'CreatePlanProject',
+        meta: { title: '项目发布' }
+      },
+      {
+        path: 'list',
+        meta: { title: '计划列表' },
+        component: 'project/projectPlan/index',
+        name: 'ProjectPlan'
+      }
+    ]
+  },
+  {
+    alwaysShow: true,
     path: '/project',
     meta: { icon: 'system', noCache: true, title: '项目管理' },
     component: 'Layout',
@@ -79,32 +113,17 @@ const routes = [
         path: 'publish',
         component: 'a/project/CreateProject',
         name: 'CreateProject',
-        meta: { title: '项目发布' }
+        meta: { title: '项目申报' }
       },
-      // {
-      //   path: 'create',
-      //   component: 'a/project/CreateProject',
-      //   hidden: true,
-      //   name: 'CreateProject',
-      //   meta: { title: '项目创建', icon: 'index', affix: true, noCache: true }
-      // },
-      // {
-      //   path: 'detail/:id',
-      //   component: 'a/project/ProjectDetail',
-      //   hidden: true,
-      //   name: 'CreateProject',
-      //   meta: { title: '项目详情', icon: 'index', affix: true, noCache: true }
-      // },
-      // {
-      //   path: 'createPlan',
-      //   component: 'a/project/CreatePlanProject',
-      //   hidden: true,
-      //   name: 'CreatePlanProject',
-      //   meta: { title: '储备项目创建', icon: 'index', affix: true, noCache: true }
-      // },
+      {
+        path: 'application',
+        component: 'project/application/index',
+        name: 'ProjectApplication',
+        meta: { title: '项目情况' }
+      },
       {
         path: '/plan',
-        meta: { title: '项目目标列表' },
+        meta: { title: '项目目标' },
         component: 'project/application',
         name: 'ProjectListForApplicationPlan'
       },
@@ -117,7 +136,7 @@ const routes = [
       },
       {
         path: '/experience',
-        meta: { title: '项目经验列表' },
+        meta: { title: '项目经验' },
         component: 'project/application',
         name: 'ProjectListForExperience'
       },
@@ -130,7 +149,7 @@ const routes = [
       },
       {
         path: '/applicationTeam',
-        meta: { title: '项目团队列表' },
+        meta: { title: '项目团队' },
         component: 'project/application',
         name: 'ProjectListForApplicationTeam'
       },
@@ -143,7 +162,7 @@ const routes = [
       },
       {
         path: '/applicationBudget',
-        meta: { title: '项目预算列表' },
+        meta: { title: '项目预算' },
         component: 'project/application',
         name: 'ProjectListForApplicationBudget'
       },
@@ -156,29 +175,68 @@ const routes = [
       },
       {
         path: '/self',
-        meta: { title: '项目自评记录列表' },
+        meta: { title: '项目自评记录' },
         component: 'project/application',
         name: 'ProjectListForSelf'
       },
       {
         path: '/self/:id',
-        meta: { title: '项目自评记录详情' },
+        meta: { title: '项目自评详情' },
         hidden: true,
         component: 'project/applicationBudget',
         name: 'ProjectSelf'
       },
       {
         path: '/supervise',
-        meta: { title: '项目督导记录列表' },
-        component: 'project/ProjectList',
+        meta: { title: '项目督导记录' },
+        component: 'project/application',
         name: 'ProjectListForSupervise'
       },
       {
         path: '/supervise/:id',
-        meta: { title: '项目督导记录详情' },
+        meta: { title: '项目督导详情' },
         hidden: true,
         component: 'project/supervise',
         name: 'ProjectSupervise'
+      },
+      {
+        path: '/change',
+        meta: { title: '项目变更记录' },
+        component: 'project/application',
+        name: 'ProjectListForChange'
+      },
+      {
+        path: '/change/:id',
+        meta: { title: '项目变更详情' },
+        hidden: true,
+        component: 'project/change/index',
+        name: 'ProjectChange'
+      },
+      {
+        path: '/publicize',
+        meta: { title: '媒体宣传记录' },
+        component: 'project/application',
+        name: 'ProjectListForPublicize'
+      },
+      {
+        path: '/publicize/:id',
+        meta: { title: '媒体宣传详情' },
+        hidden: true,
+        component: 'project/publicize/index',
+        name: 'ProjectPublicize'
+      },
+      {
+        path: '/active',
+        meta: { title: '活动记录' },
+        component: 'project/application',
+        name: 'ProjectListForActive'
+      },
+      {
+        path: '/active/:id',
+        meta: { title: '活动详情' },
+        hidden: true,
+        component: 'project/active/index',
+        name: 'ProjectActive'
       }
     ]
   }

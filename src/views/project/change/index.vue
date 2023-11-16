@@ -2,38 +2,40 @@
   <div class="app-container">
     <!--工具栏-->
     <div class="head-container">
+      <div v-if="crud.props.searchToggle">
+        <!-- 搜索 -->
+        <label class="el-form-item-label">变更类型</label>
+        <el-input v-model="query.changeType" clearable placeholder="变更类型：项目内容变更、预算变更" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <date-range-picker
+          v-model="query.changeTime"
+          start-placeholder="changeTimeStart"
+          end-placeholder="changeTimeStart"
+          class="date-item"
+        />
+        <rrOperation :crud="crud" />
+      </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="项目经验ID">
-            <el-input v-model="form.experienceId" style="width: 370px;" />
+          <el-form-item label="变更ID">
+            <el-input v-model="form.changeId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="项目ID" prop="projectId">
             <el-input v-model="form.projectId" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="项目名称">
-            <el-input v-model="form.name" style="width: 370px;" />
+          <el-form-item label="变更类型">
+            <el-input v-model="form.changeType" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="开始日期">
-            <el-date-picker v-model="form.startTime" type="datetime" style="width: 370px;" />
+          <el-form-item label="变更时间">
+            <el-date-picker v-model="form.changeTime" type="datetime" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="执行单位">
-            <el-input v-model="form.workUnit" style="width: 370px;" />
+          <el-form-item label="变更内容">
+            <el-input v-model="form.changeContent" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="项目状态：0、执行中；1、已结项">
-            <el-select v-model="form.status" filterable placeholder="请选择">
-              <el-option
-                v-for="item in dict.execution_status"
-                :key="item.id"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="项目佐证">
-            <el-input v-model="form.files" style="width: 370px;" />
+          <el-form-item label="变更文件">
+            <el-input v-model="form.changeFiles" style="width: 370px;" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -44,18 +46,13 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <!--<el-table-column prop="experienceId" label="项目经验ID" />-->
+        <!--<el-table-column prop="changeId" label="变更ID" />-->
         <!--<el-table-column prop="projectId" label="项目ID" />-->
-        <el-table-column prop="name" label="项目名称" />
-        <el-table-column prop="startTime" label="开始日期" />
-        <el-table-column prop="workUnit" label="执行单位" />
-        <el-table-column prop="status" label="项目状态">
-          <template slot-scope="scope">
-            {{ dict.label.execution_status[scope.row.status] }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="files" label="项目佐证" />
-        <el-table-column v-if="checkPer(['admin','projectExperience:edit','projectExperience:del'])" label="操作" width="150px" align="center">
+        <el-table-column prop="changeType" label="变更类型：项目内容变更、预算变更" />
+        <el-table-column prop="changeTime" label="变更时间" />
+        <el-table-column prop="changeContent" label="变更内容" />
+        <el-table-column prop="changeFiles" label="变更文件" />
+        <el-table-column v-if="checkPer(['admin','change:edit','change:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -71,34 +68,36 @@
 </template>
 
 <script>
-import crudProjectExperience from '@/api/project/experience'
+import crudChange from '@/api/project/change'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { experienceId: null, projectId: null, name: null, startTime: null, workUnit: null, status: null, files: null }
+const defaultForm = { changeId: null, projectId: null, changeType: null, changeTime: null, changeContent: null, changeFiles: null }
 export default {
-  name: 'ProjectExperience',
+  name: 'Change',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['execution_status'],
   cruds() {
-    return CRUD({ title: 'experience', url: 'api/projectExperience', idField: 'experienceId', sort: 'experienceId,desc', crudMethod: { ...crudProjectExperience }})
+    return CRUD({ title: 'change', url: 'api/change', idField: 'changeId', sort: 'changeId,desc', crudMethod: { ...crudChange }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'projectExperience:add'],
-        edit: ['admin', 'projectExperience:edit'],
-        del: ['admin', 'projectExperience:del']
+        add: ['admin', 'change:add'],
+        edit: ['admin', 'change:edit'],
+        del: ['admin', 'change:del']
       },
       rules: {
         projectId: [
           { required: true, message: '项目ID不能为空', trigger: 'blur' }
         ]
-      }
+      },
+      queryTypeOptions: [
+        { key: 'changeType', display_name: '变更类型：项目内容变更、预算变更' }
+      ]
     }
   },
   methods: {

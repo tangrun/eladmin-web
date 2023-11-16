@@ -37,12 +37,12 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="budgetId" label="ID" />
-        <el-table-column prop="projectId" label="项目ID" />
+        <!--<el-table-column prop="budgetId" label="ID" />-->
+        <!--<el-table-column prop="projectId" label="项目ID" />-->
         <el-table-column prop="name" label="预算名称" />
         <el-table-column prop="budgetValue" label="预算值" />
         <el-table-column prop="remark" label="说明" />
-        <el-table-column prop="createBy" label="录入人" />
+        <!--<el-table-column prop="createBy" label="录入人" />-->
         <el-table-column prop="createTime" label="录入时间" />
         <el-table-column v-if="checkPer(['admin','applicationBudget:edit','applicationBudget:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
