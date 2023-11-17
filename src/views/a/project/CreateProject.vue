@@ -1,5 +1,5 @@
 <template>
-  <el-card header="项目发布" style="margin: 20px;width: 80%">
+  <el-card header="项目申报" style="margin: 20px;width: 80%">
     <el-form
       ref="form"
       :inline="false"
@@ -8,12 +8,6 @@
       size="small"
       label-width="100px"
     >
-      <el-form-item label="项目计划" prop="projectPlan" required>
-        <el-input v-model="createProjectForm.projectPlan" />
-      </el-form-item>
-      <el-form-item label="上一级项目" prop="projectParent" required>
-        <el-input v-model="createProjectForm.projectParent" />
-      </el-form-item>
       <el-form-item label="项目名称" prop="projectName" required>
         <el-input v-model="createProjectForm.projectName" />
       </el-form-item>
@@ -22,6 +16,46 @@
       </el-form-item>
       <el-form-item label="项目类别" prop="categoryType" required>
         <el-input v-model.number="createProjectForm.categoryType" />
+      </el-form-item>
+      <el-form-item label="上级项目" prop="projectParent" required>
+        <el-select v-model="createProjectForm.projectParent" filterable placeholder="请选择">
+          <el-option
+            v-for="item in dict.source_funds"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="项目计划" prop="projectPlan" required>
+        <el-select v-model="createProjectForm.projectPlan" filterable placeholder="请选择">
+          <el-option
+            v-for="item in dict.source_funds"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="项目负责人" required>
+        <el-select v-model="createProjectForm.source" filterable placeholder="请选择">
+          <el-option
+            v-for="item in dict.source_funds"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="项目类型" prop="categoryType" required>
+        <el-select v-model="createProjectForm.source" filterable placeholder="请选择">
+          <el-option
+            v-for="item in dict.source_funds"
+            :key="item.id"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="行政区域" required>
         <el-cascader
@@ -46,8 +80,11 @@
       <el-form-item label="项目概述" prop="overview">
         <el-input v-model.number="createProjectForm.overview" type="textarea" :rows="3" />
       </el-form-item>
+      <el-form-item label="需求分析" prop="demand">
+        <el-input v-model.number="createProjectForm.demand" type="textarea" :rows="3" />
+      </el-form-item>
       <el-form-item label="项目备注" prop="remark">
-        <el-input v-model.number="createProjectForm.remark" />
+        <el-input v-model.number="createProjectForm.remark" type="textarea" :rows="3" />
       </el-form-item>
       <el-form-item label="项目书" prop="proposal">
         <el-upload
@@ -102,6 +139,7 @@ import cityOptions from '@/utils/cityOptions'
 
 export default {
   name: 'CreateProject',
+  dicts: ['source_funds'],
   data() {
     return {
       createProjectConfig: {

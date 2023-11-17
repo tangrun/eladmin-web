@@ -106,6 +106,7 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import crudUser from '@/api/system/user'
 
 const defaultForm = { userId: null, deptId: null, username: null, nickName: null, gender: null, phone: null, email: null, avatarName: null, avatarPath: null, password: null, isAdmin: null, enabled: null, createBy: null, updateBy: null, pwdResetTime: null, createTime: null, updateTime: null }
 export default {
@@ -113,7 +114,7 @@ export default {
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: 'e', url: 'api/sysUser', idField: 'userId', sort: 'userId,desc', crudMethod: { ...crudSysUser }})
+    return CRUD({ title: '用户', url: 'api/users', crudMethod: { ...crudUser }})
   },
   data() {
     return {
@@ -123,7 +124,7 @@ export default {
         del: ['admin', 'sysUser:del']
       },
       rules: {
-      }    }
+      }}
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据

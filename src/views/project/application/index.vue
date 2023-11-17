@@ -5,7 +5,7 @@
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
         <label class="el-form-item-label">项目类型</label>
-<!--        <el-input v-model="query.projectType" clearable placeholder="项目类型" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
+        <!--        <el-input v-model="query.projectType" clearable placeholder="项目类型" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
         <el-select
           v-model="query.projectType"
           clearable
@@ -186,7 +186,7 @@
             {{ dict.label.execution_status[scope.row.projectStatus] }}
           </template>
         </el-table-column>
-        <el-table-column prop="approvalStatus" label="审批状态" >
+        <el-table-column prop="approvalStatus" label="审批状态">
           <template slot-scope="scope">
             {{ dict.label.approval_status[scope.row.approvalStatus] }}
           </template>
