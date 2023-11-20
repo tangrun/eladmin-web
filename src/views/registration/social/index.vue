@@ -104,6 +104,7 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import {mapGetters} from "vuex";
 
 const defaultForm = { id: null, administrativeLevel: null, province: null, city: null, county: null, street: null, community: null, name: null, description: null, creditCode: null, managerName: null, managerPhone: null, managerEmail: null, businessLicenseId: null, state: null, remark: null }
 export default {
@@ -111,20 +112,24 @@ export default {
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: 'd', url: 'api/sysUserSocialApply', idField: 'id', sort: 'id,desc', crudMethod: { ...crudSysUserSocialApply }})
+    return CRUD({ title: 'd', url: '/registration/social/list', idField: 'id', sort: 'id,desc', crudMethod: { ...crudSysUserSocialApply }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'sysUserSocialApply:add'],
-        edit: ['admin', 'sysUserSocialApply:edit'],
         del: ['admin', 'sysUserSocialApply:del']
       },
       rules: {
       }    }
   },
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
+  },
   created() {
     this.crud.optShow.add = false
+    this.crud.optShow.edit = false
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据

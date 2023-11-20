@@ -108,6 +108,7 @@ import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
+import {mapGetters} from "vuex";
 
 const defaultForm = { id: null, name: null, sex: null, company: null, qualification: null, political: null, identity: null, mobile: null, bankAccountNumber: null, depositBank: null, personalProfile: null, identityFrontId: null, identityBackId: null, qualificationId: null, state: null, remark: null }
 export default {
@@ -116,20 +117,24 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['user_sex'],
   cruds() {
-    return CRUD({ title: 'ss', url: 'api/sysUserExpertApply', idField: 'id', sort: 'id,desc', crudMethod: { ...crudSysUserExpertApply }})
+    return CRUD({ title: 'ss', url: '/registration/expert/list', idField: 'id', sort: 'id,desc', crudMethod: { ...crudSysUserExpertApply }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'sysUserExpertApply:add'],
-        edit: ['admin', 'sysUserExpertApply:edit'],
         del: ['admin', 'sysUserExpertApply:del']
       },
       rules: {
       }    }
   },
+  computed: {
+    ...mapGetters([
+      'user'
+    ])
+  },
   created() {
-    this.crud.opt.add = false
+    this.crud.optShow.add = false
+    this.crud.optShow.edit = false
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
