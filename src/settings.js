@@ -6,7 +6,7 @@ const Config = {
   /**
    * @description 是否显示 tagsView
    */
-  tagsView: false,
+  tagsView: true,
   /**
    * @description 固定头部
    */

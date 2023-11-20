@@ -2,9 +2,9 @@
   <el-card header="选择注册类型" style="width: 60%">
     <el-row>
       <el-radio-group v-model="to">
-        <el-radio-button label="/registration/competentApply">主管机构注册</el-radio-button>
-        <el-radio-button label="/registration/sociaApply">社会组织注册</el-radio-button>
-        <el-radio-button label="/registration/expertApply">评审专家注册</el-radio-button>
+        <el-radio-button label="/registration/competent">主管机构注册</el-radio-button>
+        <el-radio-button label="/registration/socia">社会组织注册</el-radio-button>
+        <el-radio-button label="/registration/expert">评审专家注册</el-radio-button>
       </el-radio-group>
     </el-row>
     <el-row style="height: 80px" />
@@ -20,7 +20,7 @@ export default {
   name: 'RegistrationIndex',
   data() {
     return {
-      to: '/registration/competentApply'
+      to: '/registration/competent'
     }
   },
   methods: {

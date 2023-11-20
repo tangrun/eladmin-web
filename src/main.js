@@ -66,19 +66,19 @@ const routes = [
       {
         path: '/competent/applyList',
         component: 'registration/competent/ApplyList',
-        name: 'CompetentApplyList',
+        name: 'CompetentOrganRegistrationAudit',
         meta: { title: '主管机构注册审核', icon: 'index', affix: false, noCache: true }
       },
       {
         path: '/social/applyList',
         component: 'registration/social/ApplyList',
-        name: 'SocialApplyList',
+        name: 'SocialOrganRegistrationAudit',
         meta: { title: '社会组织注册审核', icon: 'index', affix: false, noCache: true }
       },
       {
         path: '/expert/applyList',
         component: 'registration/expert/ApplyList',
-        name: 'ExpertApplyList',
+        name: 'ExpertOrganRegistrationAudit',
         meta: { title: '评审专家注册审核', icon: 'index', affix: false, noCache: true }
       }
     ]
@@ -242,13 +242,13 @@ const routes = [
   }
 ]
 
-const sdata = JSON.parse(JSON.stringify(routes))
-const rdata = JSON.parse(JSON.stringify(routes))
-const sidebarRoutes = filterAsyncRouter(sdata)
-const rewriteRoutes = filterAsyncRouter(rdata, false, true)
-rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true })
-
-store.dispatch('GenerateRoutes', rewriteRoutes).then(() => { // 存储路由
-  router.addRoutes(rewriteRoutes) // 动态添加可访问路由表
-})
-store.dispatch('SetSidebarRouters', sidebarRoutes)
+// const sdata = JSON.parse(JSON.stringify(routes))
+// const rdata = JSON.parse(JSON.stringify(routes))
+// const sidebarRoutes = filterAsyncRouter(sdata)
+// const rewriteRoutes = filterAsyncRouter(rdata, false, true)
+// rewriteRoutes.push({ path: '*', redirect: '/404', hidden: true })
+//
+// store.dispatch('GenerateRoutes', rewriteRoutes).then(() => { // 存储路由
+//   router.addRoutes(rewriteRoutes) // 动态添加可访问路由表
+// })
+// store.dispatch('SetSidebarRouters', sidebarRoutes)

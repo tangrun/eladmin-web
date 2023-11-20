@@ -54,35 +54,35 @@ export const constantRouterMap = [
   },
   {
     path: '/registration',
-    component: (resolve) => require(['@/views/a/registration/RegistrationContainer.vue'], resolve),
+    component: (resolve) => require(['@/views/registration/Layout.vue'], resolve),
     redirect: '/registration/index',
     children: [
       {
         path: 'index',
-        component: (resolve) => require(['@/views/a/registration/RegistrationIndex.vue'], resolve),
+        component: (resolve) => require(['@/views/registration/index.vue'], resolve),
         hidden: true,
-        name: 'registrationIndex',
+        name: 'RegistrationIndex',
         meta: { title: '注册', icon: 'index', affix: false, noCache: false }
       },
       {
-        path: 'sociaApply',
-        component: (resolve) => require(['@/views/a/registration/SocialApply.vue'], resolve),
+        path: 'competent',
+        component: (resolve) => require(['@/views/registration/competent/Apply.vue'], resolve),
         hidden: true,
-        name: 'SocialApply',
+        name: 'CompetentOrganRegistration',
+        meta: { title: '主管机构注册', icon: 'index', affix: false, noCache: true }
+      }, {
+        path: 'socia',
+        component: (resolve) => require(['@/views/registration/social/Apply.vue'], resolve),
+        hidden: true,
+        name: 'SocialOrganRegistration',
         meta: { title: '社会组织注册', icon: 'index', affix: false, noCache: false }
       },
       {
-        path: 'expertApply',
-        component: (resolve) => require(['@/views/a/registration/ExpertApply.vue'], resolve),
+        path: 'expert',
+        component: (resolve) => require(['@/views/registration/expert/Apply.vue'], resolve),
         hidden: true,
-        name: 'ExpertApply',
+        name: 'ExpertRegistration',
         meta: { title: '专家注册', icon: 'index', affix: false, noCache: true }
-      }, {
-        path: 'competentApply',
-        component: (resolve) => require(['@/views/a/registration/CompetentApply.vue'], resolve),
-        hidden: true,
-        name: 'CompetentApply',
-        meta: { title: '主管机构注册', icon: 'index', affix: false, noCache: true }
       }
     ]
   },

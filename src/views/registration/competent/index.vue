@@ -127,14 +127,12 @@ export default {
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: 'cccccs', url: 'api/sysUserCompetentApply', idField: 'id', sort: 'id,desc', crudMethod: { ...crudSysUserCompetentApply }})
+    return CRUD({ title: 'cccccs', url: '/registration/competent/list', idField: 'id', sort: 'id,desc', crudMethod: { ...crudSysUserCompetentApply }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'sysUserCompetentApply:add'],
-        edit: ['admin', 'sysUserCompetentApply:edit'],
-        del: ['admin', 'sysUserCompetentApply:del']
+        del: ['admin', 'registration:competent:del']
       },
       rules: {
         administrativeLevel: [
