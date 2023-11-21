@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 import { encrypt } from '@/utils/rsaEncrypt'
-
 export function add(data) {
   return request({
     url: 'api/users',

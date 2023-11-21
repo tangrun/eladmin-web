@@ -102,7 +102,8 @@ export default {
     },
     logout() {
       this.$store.dispatch('LogOut').then(() => {
-        location.reload()
+        this.$router.push('/')
+        // location.reload()
       })
     }
   }

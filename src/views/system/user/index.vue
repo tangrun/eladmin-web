@@ -58,25 +58,42 @@
             <rrOperation />
           </div>
           <crudOperation show="" :permission="permission">
-            <el-button
-              slot="right"
-              v-permission="['admin','user:add']"
-              :disabled="crud.selections.length === 0"
-              class="filter-item"
-              size="mini"
-              type="primary"
-              icon="el-icon-refresh-left"
-              @click="resetPwd(crud.selections)"
-            >重置密码
-            </el-button>
+            <span slot="left">
+              <el-button
+                v-permission="['member:add']"
+                class="filter-item"
+                size="mini"
+                type="primary"
+                icon="el-icon-plus"
+                @click="showCreateMemberDialog"
+              >新增成员
+              </el-button>
+              <el-button
+                v-permission="['admin','user:add']"
+                :disabled="crud.selections.length === 0"
+                class="filter-item"
+                size="mini"
+                type="primary"
+                icon="el-icon-refresh-left"
+                @click="resetPwd(crud.selections)"
+              >重置密码
+              </el-button>
+            </span>
           </crudOperation>
         </div>
         <!--表单渲染-->
-        <el-dialog append-to-body :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="570px">
+        <el-dialog
+          append-to-body
+          :close-on-click-modal="false"
+          :before-close="crud.cancelCU"
+          :visible.sync="crud.status.cu > 0"
+          :title="crud.status.title"
+          width="570px"
+        >
           <el-form ref="form" :inline="true" :model="form" :rules="rules" size="small" label-width="66px">
-            <!--            <el-form-item label="用户名" prop="username">-->
-            <!--              <el-input v-model="form.username" @keydown.native="keydown($event)" />-->
-            <!--            </el-form-item>-->
+            <el-form-item label="用户名" prop="username">
+              <el-input v-model="form.username" @keydown.native="keydown($event)" />
+            </el-form-item>
             <el-form-item label="名称" prop="nickName">
               <el-input v-model="form.nickName" @keydown.native="keydown($event)" />
             </el-form-item>
@@ -86,7 +103,7 @@
             <el-form-item label="邮箱" prop="email">
               <el-input v-model="form.email" />
             </el-form-item>
-            <el-form-item label="部门" prop="dept.id">
+            <el-form-item label="部门" prop="dept">
               <treeselect
                 v-model="form.dept.id"
                 :options="depts"
@@ -124,7 +141,8 @@
                   v-for="item in dict.user_status"
                   :key="item.id"
                   :label="item.value"
-                >{{ item.label }}</el-radio>
+                >{{ item.label }}
+                </el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item style="margin-bottom: 0;" label="角色" prop="roles">
@@ -152,7 +170,13 @@
           </div>
         </el-dialog>
         <!--表格渲染-->
-        <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
+        <el-table
+          ref="table"
+          v-loading="crud.loading"
+          :data="crud.data"
+          style="width: 100%;"
+          @selection-change="crud.selectionChangeHandler"
+        >
           <el-table-column :selectable="checkboxT" type="selection" width="55" />
           <el-table-column :show-overflow-tooltip="true" prop="username" label="用户名" />
           <el-table-column :show-overflow-tooltip="true" prop="nickName" label="昵称" />
@@ -215,9 +239,21 @@ import Treeselect from '@riophae/vue-treeselect'
 import { mapGetters } from 'vuex'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { LOAD_CHILDREN_OPTIONS } from '@riophae/vue-treeselect'
+
 let userRoles = []
 let userJobs = []
-const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, enabled: 'false', roles: [], jobs: [], dept: { id: null }, phone: null }
+const defaultForm = {
+  id: null,
+  username: null,
+  nickName: null,
+  gender: '男',
+  email: null,
+  enabled: 'false',
+  roles: [],
+  jobs: [],
+  dept: { id: null },
+  phone: null
+}
 export default {
   name: 'User',
   components: { Treeselect, crudOperation, rrOperation, udOperation, pagination, DateRangePicker },
@@ -238,6 +274,13 @@ export default {
         callback()
       }
     }
+    const validDept = (rule, value, callback) => {
+      if (!value || !value.id) {
+        callback(new Error('请选择部门'))
+      } else {
+        callback()
+      }
+    }
     return {
       height: document.documentElement.clientHeight - 180 + 'px;',
       deptName: '', depts: [], deptDatas: [], jobs: [], level: 3, roles: [],
@@ -254,7 +297,7 @@ export default {
       ],
       rules: {
         username: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { required: false, message: '请输入用户名', trigger: 'blur' },
           { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
         ],
         nickName: [
@@ -267,7 +310,19 @@ export default {
         ],
         phone: [
           { required: true, trigger: 'blur', validator: validPhone }
+        ],
+        dept: [
+          { required: true, trigger: 'blur', validator: validDept }
         ]
+      },
+      createMemberConfig: {
+        visible: false,
+        loading: false,
+        form: {
+          dept: {
+            id: null
+          }
+        }
       }
     }
   },
@@ -357,12 +412,12 @@ export default {
           type: 'warning'
         })
         return false
-      // } else if (this.jobDatas.length === 0) {
-      //   this.$message({
-      //     message: '岗位不能为空',
-      //     type: 'warning'
-      //   })
-      //   return false
+        // } else if (this.jobDatas.length === 0) {
+        //   this.$message({
+        //     message: '岗位不能为空',
+        //     type: 'warning'
+        //   })
+        //   return false
       } else if (this.roleDatas.length === 0) {
         this.$message({
           message: '角色不能为空',
@@ -424,6 +479,7 @@ export default {
     },
     // 获取弹窗内部门数据
     loadDepts({ action, parentNode, callback }) {
+      console.log('----', action, parentNode)
       if (action === LOAD_CHILDREN_OPTIONS) {
         getDepts({ enabled: true, pid: parentNode.id }).then(res => {
           parentNode.children = res.content.map(function(obj) {
@@ -467,19 +523,22 @@ export default {
     getRoles() {
       getAll().then(res => {
         this.roles = res
-      }).catch(() => { })
+      }).catch(() => {
+      })
     },
     // 获取弹窗内岗位数据
     getJobs() {
       getAllJob().then(res => {
         this.jobs = res.content
-      }).catch(() => { })
+      }).catch(() => {
+      })
     },
     // 获取权限级别
     getRoleLevel() {
       getLevel().then(res => {
         this.level = res.level
-      }).catch(() => { })
+      }).catch(() => {
+      })
     },
     checkboxT(row, rowIndex) {
       return row.id !== this.user.id
@@ -497,7 +556,8 @@ export default {
         console.log(ids)
         crudUser.resetPwd(ids).then(() => {
           this.crud.notify('重置成功, 用户新密码:123456', CRUD.NOTIFICATION_TYPE.SUCCESS)
-        }).catch(() => {})
+        }).catch(() => {
+        })
       }).catch(() => {
       })
     }
@@ -506,8 +566,8 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  ::v-deep .vue-treeselect__control,::v-deep .vue-treeselect__placeholder,::v-deep .vue-treeselect__single-value {
-    height: 30px;
-    line-height: 30px;
-  }
+::v-deep .vue-treeselect__control, ::v-deep .vue-treeselect__placeholder, ::v-deep .vue-treeselect__single-value {
+  height: 30px;
+  line-height: 30px;
+}
 </style>
