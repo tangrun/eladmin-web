@@ -1,6 +1,17 @@
 /**
  * Created by PanJiaChen on 16/11/18.
  */
+import MimeType from '@/utils/mimetype'
+
+export const mimetypeAllDoc = [
+  MimeType.catalog['.doc'],
+  MimeType.catalog['.docx'],
+  MimeType.catalog['.xls'],
+  MimeType.catalog['.xlsx'],
+  MimeType.catalog['.ppt'],
+  MimeType.catalog['.pptx'],
+  MimeType.catalog['.pdf']
+].join(',')
 
 /**
  * Parse the time to string
