@@ -69,35 +69,33 @@
         </el-form-item>
         <el-form-item label="项目书">
           <!--          <el-input v-model="form.proposal" style="width: 370px;" />-->
-          <UploadWrapper>
-            <el-upload
-              v-model="form.proposalFiles"
-              action="#"
-              :show-file-list="true"
-              list-type="text"
-              :auto-upload="false"
-              :multiple="true"
-              :limit="3"
-              :accept="mimetypeAllDoc"
-            >
-              <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
-          </UploadWrapper>
-        </el-form-item>
-        <el-form-item label="项目合同">
-          <!--          <el-input v-model="form.contract" style="width: 370px;" />-->
-          <el-upload
-            :file-list="form.contractFiles"
+          <Uploader
+            :raws.sync="form.proposals"
             action="#"
             :show-file-list="true"
             list-type="text"
             :auto-upload="false"
-            :multiple="false"
+            :multiple="true"
             :limit="1"
             :accept="mimetypeAllDoc"
           >
             <el-button size="small" type="primary">点击上传</el-button>
-          </el-upload>
+          </Uploader>
+        </el-form-item>
+        <el-form-item label="项目合同">
+          <!--          <el-input v-model="form.contract" style="width: 370px;" />-->
+          <Uploader
+            :raws="form.proposals"
+            action="#"
+            :show-file-list="true"
+            list-type="text"
+            :auto-upload="false"
+            :multiple="true"
+            :limit="1"
+            :accept="mimetypeAllDoc"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </Uploader>
         </el-form-item>
         <!--        <el-form-item label="启动时间">-->
         <!--          <el-input v-model="form.startTime" style="width: 370px;" />-->
@@ -163,7 +161,7 @@ import { cityOptions, cityOptionsProps } from '@/utils/cityOptions'
 import { initData } from '@/api/data'
 import { mimetypeAllDoc } from '@/utils'
 import { add } from '@/api/project/projectPlan'
-import UploadWrapper from '@/views/project/projectPlan/UploadWrapper.vue'
+import Uploader from '@/components/Uploader/index.vue'
 
 // const defaultForm = {
 //   planId: null,
@@ -192,11 +190,10 @@ import UploadWrapper from '@/views/project/projectPlan/UploadWrapper.vue'
 // }
 export default {
   name: 'CreatePlanProject',
-  components: { UploadWrapper },
+  components: { Uploader },
   dicts: ['execution_status', 'source_funds', 'plan_status', 'project_category'],
   data: function() {
     return {
-      proposalFiles: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }],
       mimetypeAllDoc,
       cityOptions,
       cityOptionsProps,
@@ -227,8 +224,10 @@ export default {
     'form.projectTime': {
       handler(value, old) {
         if (value && value.length === 2) {
-          this.form.startTime = value[0].getTime()
-          this.form.endTime = value[1].getTime()
+          // this.form.startTime = value[0].getTime()
+          // this.form.endTime = value[1].getTime()
+          this.form.startTime = value[0]
+          this.form.endTime = value[1]
         } else {
           this.form.startTime = null
           this.form.endTime = null
@@ -238,44 +237,33 @@ export default {
     },
     'form.contractFiles': {
       handler(value, old) {
+        console.log(value)
         this.form.contract = value && value.length > 0 ? value[0].raw : null
       },
       deep: true
     },
     'form.proposalFiles': {
       handler(value, old) {
-        console.log('----', value, old)
         this.form.proposal = value && value.length > 0 ? value[0].raw : null
       },
       deep: true
     }
   },
-  created() {
-    // this.resetForm()
-    setTimeout(() => {
-      this.form.proposalFiles = [{}, {}]
-    }, 3000)
-  },
   methods: {
-    onRemove(file) {
-      console.log('onRemove', file)
-    },
-    onChange(file, fileList) {
-      console.log('onChange', file, fileList)
-      this.proposalFiles = fileList
-    },
     onSubmit() {
       console.log(this.form)
       this.$refs.form.validate(valid => {
         if (!valid) return
         this.submitConfig.loading = true
         add(this.form).then(() => {
+          this.submitConfig.loading = false
           this.$notify({
             title: '添加成功',
             type: 'success',
             duration: 2500
           })
         }).catch((err) => {
+          this.submitConfig.loading = false
           this.$notify({
             title: '添加失败',
             message: err,
