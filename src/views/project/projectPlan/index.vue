@@ -4,61 +4,76 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <label class="el-form-item-label">资金来源</label>
-        <el-select
-          v-model="query.source"
+        <el-input
+          v-model="query.blurry"
           clearable
           size="small"
-          placeholder="资金来源"
+          placeholder="输入关键词搜索"
+          style="width: 200px;"
           class="filter-item"
-          style="width: 185px"
-          @change="crud.toQuery"
-        >
-          <el-option
-            v-for="item in dict.source_funds"
-            :key="item.id"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-
+          @keyup.enter.native="crud.toQuery"
+        />
         <el-select
           v-model="query.category"
-          clearable
           size="small"
-          placeholder="项目类别"
           class="filter-item"
-          style="width: 185px"
-          @change="crud.toQuery"
+          clearable
+          filterable
+          placeholder="项目类别"
         >
           <el-option
             v-for="item in dict.project_category"
-            :key="item.id"
+            :key="item.value"
             :label="item.label"
             :value="item.value"
           />
         </el-select>
-        <rrOperation :crud="crud"/>
+        <CitySelector
+          placeholder="落地区域"
+          class="filter-item"
+          size="small"
+          :province.sync="query.province"
+          :city.sync="query.city"
+          :county.sync="query.county"
+          :street.sync="query.street"
+        />
+        <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
-      <crudOperation :permission="permission"/>
+      <crudOperation :permission="permission">
+        <span slot="right">
+          <el-button
+            v-permission="permission.split"
+            class="filter-item"
+            type="primary"
+            icon="el-icon-delete"
+            size="mini"
+            :loading="crud.status.cu === 2"
+            :disabled="crud.selections.length !== 1"
+            @click="toSpilt"
+          >
+            项目拆分
+          </el-button>
+        </span>
+      </crudOperation>
       <!--表单组件-->
       <el-dialog
         :close-on-click-modal="false"
         :before-close="crud.cancelCU"
         :visible.sync="crud.status.cu > 0"
-        :title="crud.status.title"
+        :title="splitProject? '拆分项目':crud.status.title"
         width="550px"
       >
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="100px">
           <!--        <el-form-item label="计划ID">-->
           <!--          <el-input v-model="form.planId"  />-->
           <!--        </el-form-item>-->
-          <!--        <el-form-item label="上级项目">-->
-          <!--          <el-input v-model="form.parentId"  />-->
-          <!--        </el-form-item>-->
+          <el-form-item v-if="splitProject" label="上级项目">
+            <span>{{ splitProject.planName }}</span>
+            <!--            <el-input :disabled="false"></el-input>-->
+          </el-form-item>
           <el-form-item label="项目名称" prop="planName">
-            <el-input v-model="form.planName"/>
+            <el-input v-model="form.planName" />
           </el-form-item>
           <el-form-item label="项目状态">
             <el-select v-model="form.planStatus" filterable placeholder="请选择">
@@ -91,13 +106,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="项目概述">
-            <el-input v-model="form.overview" type="textarea" rows="3"/>
+            <el-input v-model="form.overview" type="textarea" rows="3" />
           </el-form-item>
           <el-form-item label="项目备注">
-            <el-input v-model="form.remark" type="textarea" rows="3"/>
+            <el-input v-model="form.remark" type="textarea" rows="3" />
           </el-form-item>
           <el-form-item label="项目公告">
-            <el-input v-model="form.notice" type="textarea" rows="3"/>
+            <el-input v-model="form.notice" type="textarea" rows="3" />
           </el-form-item>
           <el-form-item label="项目负责人" prop="leaderId">
             <!--          <el-input v-model="form.leaderId"  />-->
@@ -118,33 +133,35 @@
           </el-form-item>
           <el-form-item label="项目书">
             <!--          <el-input v-model="form.proposal"  />-->
-            <Uploader
-              :raws.sync="form.proposals"
-              action="#"
+            <el-upload
+              ref="proposals"
+              :action="this.$store.getters.baseApi + '/api/projectPlan/upload'"
               :show-file-list="true"
               list-type="text"
-              :auto-upload="false"
+              :headers="uploadHeaders"
+              :auto-upload="true"
               :multiple="true"
               :limit="1"
               :accept="mimetypeAllDoc()"
             >
               <el-button size="small" type="primary">点击上传</el-button>
-            </Uploader>
+            </el-upload>
           </el-form-item>
           <el-form-item label="项目合同">
             <!--          <el-input v-model="form.contract"  />-->
-            <Uploader
-              :raws.sync="form.contracts"
-              action="#"
+            <el-upload
+              ref="contracts"
+              :action="this.$store.getters.baseApi + '/api/projectPlan/upload'"
               :show-file-list="true"
               list-type="text"
-              :auto-upload="false"
+              :headers="uploadHeaders"
+              :auto-upload="true"
               :multiple="true"
               :limit="1"
               :accept="mimetypeAllDoc()"
             >
               <el-button size="small" type="primary">点击上传</el-button>
-            </Uploader>
+            </el-upload>
           </el-form-item>
           <!--        <el-form-item label="启动时间">-->
           <!--          <el-input v-model="form.startTime"  />-->
@@ -171,16 +188,16 @@
             <!--            />-->
           </el-form-item>
           <el-form-item label="联系人">
-            <el-input v-model="form.contacts"/>
+            <el-input v-model="form.contacts" />
           </el-form-item>
           <el-form-item label="联系电话">
-            <el-input v-model="form.phone"/>
+            <el-input v-model="form.phone" />
           </el-form-item>
           <el-form-item label="项目投稿邮箱">
-            <el-input v-model="form.email"/>
+            <el-input v-model="form.email" />
           </el-form-item>
           <el-form-item label="联系地址">
-            <el-input v-model="form.address"/>
+            <el-input v-model="form.address" />
           </el-form-item>
           <el-form-item label="投稿截止时间">
             <el-date-picker
@@ -214,18 +231,64 @@
         style="width: 100%;"
         @selection-change="crud.selectionChangeHandler"
       >
-        <el-table-column type="selection" width="55"/>
-        <!--<el-table-column prop="planId" label="计划ID" />-->
-        <el-table-column prop="parentId" label="上级项目"/>
-        <el-table-column prop="planStatus" label="计划状态">
-          <template slot-scope="scope">
-            {{ dict.label.plan_status[scope.row.planStatus] }}
+        <el-table-column type="selection" width="55" />
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" size="mini" class="table-expand">
+              <el-form-item label="上级项目" label-width="50px">
+                <span>{{ props.row.parent ? props.row.parent.planName : '无' }}</span>
+              </el-form-item>
+              <el-form-item label="项目概述">
+                <span>{{ props.row.overview }}</span>
+              </el-form-item>
+              <el-form-item label="项目概述">
+                <span>{{ props.row.overview }}</span>
+              </el-form-item>
+              <el-form-item label="项目备注">
+                <span>{{ props.row.remark }}</span>
+              </el-form-item>
+              <el-form-item label="项目公告">
+                <span>{{ props.row.notice }}</span>
+              </el-form-item>
+              <el-form-item label="项目负责人">
+                <span>{{ props.row.leader ? props.row.leader.name : '' }}</span>
+              </el-form-item>
+              <el-form-item label="项目时间">
+                <span>{{ props.row.startTime + '-' + props.row.endTime }}</span>
+              </el-form-item>
+              <el-form-item label="联系人">
+                <span>{{ props.row.contacts }}</span>
+              </el-form-item>
+              <el-form-item label="联系电话">
+                <span>{{ props.row.phone }}</span>
+              </el-form-item>
+              <el-form-item label="项目投稿邮箱">
+                <span>{{ props.row.email }}</span>
+              </el-form-item>
+              <el-form-item label="联系地址">
+                <span>{{ props.row.address }}</span>
+              </el-form-item>
+              <el-form-item label="投稿截止时间">
+                <span>{{ props.row.deadline }}</span>
+              </el-form-item>
+              <el-form-item label="落地地区">
+                <span>{{
+                  props.row.province + '-' + props.row.city + '-' + props.row.county + '-' + props.row.street
+                }}</span>
+              </el-form-item>
+            </el-form>
           </template>
         </el-table-column>
-        <el-table-column prop="planName" label="项目名称"/>
+        <!--<el-table-column prop="planId" label="计划ID" />-->
+        <el-table-column prop="planName" label="项目名称" />
         <el-table-column prop="categoryId" label="项目类别">
           <template slot-scope="scope">
             {{ dict.label.project_category[scope.row.categoryId] }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="planStatus" label="计划状态">
+          <template slot-scope="scope">
+            {{ dict.label.plan_status[scope.row.planStatus] }}
           </template>
         </el-table-column>
         <el-table-column prop="source" label="资金来源">
@@ -233,22 +296,7 @@
             {{ dict.label.source_funds[scope.row.source] }}
           </template>
         </el-table-column>
-        <!--<el-table-column prop="overview" label="项目概述" />-->
-        <!--<el-table-column prop="remark" label="项目备注" />-->
-        <!--<el-table-column prop="notice" label="项目公告" />-->
-        <!--<el-table-column prop="createBy" label="创建人" />-->
-        <el-table-column prop="createTime" label="创建时间"/>
-        <!--<el-table-column prop="leaderId" label="项目负责人" />-->
-        <!--<el-table-column prop="proposal" label="项目书" />-->
-        <!--<el-table-column prop="contract" label="项目合同" />-->
-        <el-table-column prop="startTime" label="启动时间"/>
-        <el-table-column prop="endTime" label="结束时间"/>
-        <!--<el-table-column prop="contacts" label="联系人" />-->
-        <!--<el-table-column prop="phone" label="联系电话" />-->
-        <!--<el-table-column prop="email" label="项目投稿邮箱" />-->
-        <!--<el-table-column prop="address" label="联系地址" />-->
-        <!--<el-table-column prop="deadline" label="投稿截止时间" />-->
-        <!--<el-table-column prop="landingArea" label="落地地区" />-->
+
         <el-table-column
           v-if="checkPer(['admin','projectPlan:edit','projectPlan:del'])"
           label="操作"
@@ -264,28 +312,28 @@
         </el-table-column>
       </el-table>
       <!--分页组件-->
-      <pagination/>
+      <pagination />
     </div>
   </div>
 </template>
 
 <script>
 import crudProjectPlan from '@/api/project/projectPlan'
-import CRUD, {presenter, header, form, crud} from '@crud/crud'
+import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 import CitySelector from '@/components/CitySelector/index.vue'
-import {mimetypeAllDoc} from '@/utils'
-import {initData} from '@/api/data'
-import Uploader from '@/components/Uploader/index.vue'
+import { mimetypeAllDoc } from '@/utils'
+import { initData } from '@/api/data'
 import DateTimeRangePicker from '@/components/DateTimeRangePicker/index.vue'
-import {cityOptions, cityOptionsProps} from "@/utils/cityOptions";
+import { mapGetters } from 'vuex'
+import { uploader } from '@/components/Uploader'
 
 const defaultForm = {
   planId: null,
-  parentId: null,
+  parent: null,
   planStatus: null,
   planName: null,
   category: null,
@@ -295,9 +343,7 @@ const defaultForm = {
   notice: null,
   leader: null,
   proposals: [],
-  proposalsOld: [],
   contracts: [],
-  contractsOld: [],
   startTime: null,
   endTime: null,
   contacts: null,
@@ -313,16 +359,24 @@ const defaultForm = {
 }
 export default {
   name: 'ProjectPlan',
-  components: {DateTimeRangePicker, Uploader, CitySelector, pagination, crudOperation, rrOperation, udOperation},
-  mixins: [presenter(), header(), form(defaultForm), crud()],
+  components: { DateTimeRangePicker, CitySelector, pagination, crudOperation, rrOperation, udOperation },
+  mixins: [presenter(), header(), form(defaultForm), crud(), uploader()],
   dicts: ['execution_status', 'source_funds', 'plan_status', 'project_category'],
+  computed: {
+    ...mapGetters([
+      'baseApi'
+    ])
+  },
+  mounted() {
+    console.log('created', this.$refs)
+  },
   cruds() {
     return CRUD({
-      title: 'projectPlan',
+      title: '项目计划',
       url: 'api/projectPlan',
       idField: 'planId',
       sort: 'planId,desc',
-      crudMethod: {...crudProjectPlan}
+      crudMethod: { ...crudProjectPlan }
     })
   },
   data() {
@@ -330,35 +384,49 @@ export default {
       permission: {
         add: ['admin', 'projectPlan:add'],
         edit: ['admin', 'projectPlan:edit'],
-        del: ['admin', 'projectPlan:del']
+        del: ['admin', 'projectPlan:del'],
+        split: ['admin', 'projectPlan:split']
       },
       rules: {
         planName: [
-          {required: true, message: '请输入项目名称', trigger: 'blur'},
-          {min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur'}
+          { required: true, message: '请输入项目名称', trigger: 'blur' },
+          { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
         ],
-        category: {required: true, message: '请选择项目类型', trigger: 'blur'},
-        sourceFund: {required: true, message: '请选择资金来源', trigger: 'blur'},
-        startTime: {required: true, message: '请选择启动时间', trigger: 'blur'},
-        endTime: {required: true, message: '请选择结束时间', trigger: 'blur'}
+        category: { required: true, message: '请选择项目类型', trigger: 'blur' },
+        sourceFund: { required: true, message: '请选择资金来源', trigger: 'blur' },
+        startTime: { required: true, message: '请选择启动时间', trigger: 'blur' },
+        endTime: { required: true, message: '请选择结束时间', trigger: 'blur' }
       },
       queryTypeOptions: [
-        {key: 'source', display_name: '资金来源：专项资金、配套资金、支持资金'}
+        { key: 'source', display_name: '资金来源：专项资金、配套资金、支持资金' }
       ],
       leaderConfig: {
         loaded: false,
         loading: false,
         users: []
-      }
+      },
+      splitProject: null
     }
   },
   methods: {
+    toSpilt() {
+      console.log(this)
+      this.splitProject = this.crud.selections[0]
+      console.log(this.splitProject)
+      this.crud.toAdd()
+    },
     mimetypeAllDoc,
+    [CRUD.HOOK.beforeValidateCU]() {
+      console.log('beforeValidateCU', this.form.planName)
+      return true
+    },
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
     },
-    [CRUD.HOOK.beforeValidateCU]() {
+    [CRUD.HOOK.beforeSubmit]() {
+      this.form.contracts = this.getUploadIds(this.$refs.contracts)
+      this.form.proposals = this.getUploadIds(this.$refs.proposals)
       console.log(this.form)
       return true
     },
@@ -381,5 +449,18 @@ export default {
 </script>
 
 <style scoped>
+.table-expand {
+  font-size: 0;
+}
 
+.table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+
+.table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
 </style>

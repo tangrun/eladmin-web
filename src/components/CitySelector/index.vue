@@ -1,52 +1,30 @@
 <template>
   <el-cascader
-    v-bind="$attrs"
-    v-on="$listeners"
+    ref="cascader"
     :value="value"
     :clearable="true"
     :show-all-levels="true"
+    :placeholder="placeholder"
+    :size="size"
     :filterable="true"
     :options="cityOptions"
     :props="cityOptionsProps"
-    style="width: 100%"
     @input="onChange"
   />
 </template>
 
 <script>
-import {Cascader} from 'element-ui'
-import CityOptions, {cityOptions, cityOptionsProps} from '@/utils/cityOptions'
+import { cityOptions, cityOptionsProps } from '@/utils/cityOptions'
 
 export default {
   name: 'CitySelector',
-  computed: {
-    cityOptions() {
-      return cityOptions
-    },
-    cityOptionsProps() {
-      return cityOptionsProps
-    }
-  },
-  mixins: [Cascader],
-  data() {
-    return {}
-  },
   props: {
-    ...Cascader.props,
     value: {
-      type: String | Number | Object,
+      type: Object
     },
-    options: {
-      type: Array,
-      default: () => {
-        return cityOptions
-      }
-    },
-    props: {
-      type: Object,
-      default: () => {
-        return cityOptionsProps
-      }
+    size: { type: String },
+    placeholder: {
+      type: String
     },
     province: {
       type: String
@@ -61,10 +39,14 @@ export default {
       type: String
     }
   },
+  data() {
+    return {
+      cityOptions,
+      cityOptionsProps
+    }
+  },
   methods: {
-    CityOptions,
     onChange(value) {
-      console.log('cccc ', this.value, value)
       this.$emit('input', value)
       this.$emit('update:province', this.getArrayIndexValue(value, 0))
       this.$emit('update:city', this.getArrayIndexValue(value, 1))

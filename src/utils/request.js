@@ -15,13 +15,10 @@ const service = axios.create({
 // request拦截器
 service.interceptors.request.use(
   config => {
-    console.log(config)
     if (getToken()) {
       config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
     }
-    if (!config.headers['Content-Type']) {
-      config.headers['Content-Type'] = 'application/json'
-    }
+    config.headers['Content-Type'] = 'application/json'
     return config
   },
   error => {

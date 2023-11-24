@@ -6,6 +6,12 @@ Vue.use(Router)
 
 export const constantRouterMap = [
   {
+    path: '/test',
+    meta: { title: 'test', noCache: true },
+    component: (resolve) => require(['@/views/a/Test.vue'], resolve),
+    hidden: true
+  },
+  {
     path: '/login',
     meta: { title: '登录', noCache: true },
     component: (resolve) => require(['@/views/login'], resolve),
