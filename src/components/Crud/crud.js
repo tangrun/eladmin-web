@@ -3,6 +3,7 @@ import { parseTime, downloadFile } from '@/utils/index'
 import Vue from 'vue'
 
 /**
+ /**
  * CRUD配置
  * @author moxun
  * @param {*} options <br>
@@ -30,17 +31,24 @@ function CRUD(options) {
     // Form 表单
     form: {},
     // 重置表单
-    defaultForm: () => {},
+    defaultForm: () => {
+    },
     // 排序规则，默认 id 降序， 支持多字段排序 ['id,desc', 'createTime,asc']
     sort: ['id,desc'],
     // 等待时间
     time: 50,
     // CRUD Method
-    crudMethod: {
-      add: (form) => {},
-      del: (id) => {},
-      edit: (form) => {},
-      get: (id) => {}
+    crudMethod: { // 是通过引用它的组件赋给它，它拿到，以此来建立联系的
+      add: (form) => {
+      },
+      del: (id) => {
+      },
+      edit: (form) => {
+      },
+      get: (id) => {
+      },
+      split: (form) => {
+      }
     },
     // 主页操作栏显示哪些按钮
     optShow: {
@@ -48,7 +56,8 @@ function CRUD(options) {
       edit: true,
       del: true,
       download: true,
-      reset: true
+      reset: true,
+      split: true
     },
     // 自定义一些扩展属性
     props: {},
@@ -65,7 +74,7 @@ function CRUD(options) {
     status: {
       add: CRUD.STATUS.NORMAL,
       edit: CRUD.STATUS.NORMAL,
-      // 添加或编辑状态
+      // 添加、编辑、拆分状态
       get cu() {
         if (this.add === CRUD.STATUS.NORMAL && this.edit === CRUD.STATUS.NORMAL) {
           return CRUD.STATUS.NORMAL
@@ -85,7 +94,8 @@ function CRUD(options) {
       submit: '提交成功',
       add: '新增成功',
       edit: '编辑成功',
-      del: '删除成功'
+      del: '删除成功',
+      save: '保存草稿成功'
     },
     page: {
       // 页码
@@ -111,6 +121,9 @@ function CRUD(options) {
     },
     addSuccessNotify() {
       crud.notify(crud.msg.add, CRUD.NOTIFICATION_TYPE.SUCCESS)
+    },
+    saveSuccessNotify() {
+      crud.notify(crud.msg.save, CRUD.NOTIFICATION_TYPE.SUCCESS)
     },
     editSuccessNotify() {
       crud.notify(crud.msg.edit, CRUD.NOTIFICATION_TYPE.SUCCESS)
@@ -156,6 +169,7 @@ function CRUD(options) {
      * 启动添加
      */
     toAdd() {
+      // crud.status.save = true
       crud.resetForm()
       if (!(callVmHook(crud, CRUD.HOOK.beforeToAdd, crud.form) && callVmHook(crud, CRUD.HOOK.beforeToCU, crud.form))) {
         return
@@ -313,7 +327,9 @@ function CRUD(options) {
       return crud.crudMethod.del(ids).then(() => {
         if (delAll) {
           crud.delAllLoading = false
-        } else dataStatus.delete = CRUD.STATUS.PREPARED
+        } else {
+          dataStatus.delete = CRUD.STATUS.PREPARED
+        }
         crud.dleChangePage(1)
         crud.delSuccessNotify()
         callVmHook(crud, CRUD.HOOK.afterDelete, data)
@@ -321,7 +337,9 @@ function CRUD(options) {
       }).catch(() => {
         if (delAll) {
           crud.delAllLoading = false
-        } else dataStatus.delete = CRUD.STATUS.PREPARED
+        } else {
+          dataStatus.delete = CRUD.STATUS.PREPARED
+        }
       })
     },
     /**
@@ -400,7 +418,7 @@ function CRUD(options) {
       const form = data || (typeof crud.defaultForm === 'object' ? JSON.parse(JSON.stringify(crud.defaultForm)) : crud.defaultForm.apply(crud.findVM('form')))
       const crudFrom = crud.form
       for (const key in form) {
-        if (crudFrom.hasOwnProperty(key)) {
+        if (crudFrom.hasOwnProperty(key)) { // 有共同主键的则更新
           crudFrom[key] = form[key]
         } else {
           Vue.set(crudFrom, key, form[key])
@@ -416,6 +434,7 @@ function CRUD(options) {
      */
     resetDataStatus() {
       const dataStatus = {}
+
       function resetStatus(datas) {
         datas.forEach(e => {
           dataStatus[crud.getDataId(e)] = {
@@ -427,6 +446,7 @@ function CRUD(options) {
           }
         })
       }
+
       resetStatus(crud.data)
       crud.dataStatus = dataStatus
     },
@@ -458,7 +478,9 @@ function CRUD(options) {
      */
     selectChange(selection, row) {
       // 如果selection中存在row代表是选中，否则是取消选中
-      if (selection.find(val => { return crud.getDataId(val) === crud.getDataId(row) })) {
+      if (selection.find(val => {
+        return crud.getDataId(val) === crud.getDataId(row)
+      })) {
         if (row.children) {
           row.children.forEach(val => {
             crud.getTable().toggleRowSelection(val, true)
@@ -588,7 +610,7 @@ function CRUD(options) {
   return crud
 }
 
-// hook VM
+// hook VM 这段代码的作用是遍历Vue组件实例集合，依次调用指定的钩子函数，并返回钩子函数的执行结果。它还支持根据tag属性来调用特定的钩子函数。
 function callVmHook(crud, hook) {
   if (crud.debug) {
     console.log('callVmHook: ' + hook)
@@ -613,6 +635,8 @@ function callVmHook(crud, hook) {
   return ret
 }
 
+/* ...src 表示将 src 对象的所有属性赋值给 optsRet 对象。当 src 中新增或删除属性时，optsRet 中也会做出相应的变化。这是一种简单地拷贝对象的方式
+* 该函数的主要目的是合并 src 和 opts 的属性，如果两者具有相同的属性名，则 opts 的值将被采用。*/
 function mergeOptions(src, opts) {
   const optsRet = {
     ...src
@@ -814,7 +838,7 @@ CRUD.HOOK = {
   beforeToCU: 'beforeCrudToCU',
   /** 开始 "新建/编辑" - 之后 */
   afterToCU: 'afterCrudToCU',
-  /** "新建/编辑" 验证 - 之前 */
+  /** "新建/编辑/保存草稿" 验证 - 之前 */
   beforeValidateCU: 'beforeCrudValidateCU',
   /** "新建/编辑" 验证 - 之后 */
   afterValidateCU: 'afterCrudValidateCU',

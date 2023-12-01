@@ -9,6 +9,7 @@ import Cookies from 'js-cookie'
 // 创建axios实例
 const service = axios.create({
   baseURL: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url
+  baseURL: process.env.NODE_ENV === 'production' ? process.env.VUE_APP_BASE_API : '/', // api 的 base_url,当当前环境为生产环境（NODE_ENV 等于 'production'）时，将 VUE_APP_BASE_API 环境变量作为基础 URL；否则设为基础 URL为根路径 /
   timeout: Config.timeout // 请求超时时间
 })
 

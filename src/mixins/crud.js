@@ -33,7 +33,7 @@ export default {
       // 导出的 Loading
       downloadLoading: false,
       // 表格 Loading 属性
-      loading: true,
+      loading: true, // 给一个加载效果，当loading为false时，证明数据加载完毕，同时加载效果消失
       // 删除 Loading 属性
       delLoading: false,
       delAllLoading: false,
@@ -56,7 +56,7 @@ export default {
       }
       return new Promise((resolve, reject) => {
         this.loading = true
-        // 请求数据
+        // 请求数据，用initData指定了url，发布了一个请求，返回的data，填充this的内容
         initData(this.url, this.getQueryParams()).then(data => {
           this.total = data.totalElements
           this.data = data.content
@@ -64,6 +64,7 @@ export default {
           setTimeout(() => {
             this.loading = false
           }, this.time)
+          // 对应的resolve方法，下面这个语句的意思是，调用init()方法会返回一个promise，如果调用init()方法的地方还有个then,这里传的data就传给那个then，一层一层的异步传
           resolve(data)
         }).catch(err => {
           this.loading = false
@@ -75,7 +76,7 @@ export default {
       return true
     },
     getQueryParams: function() {
-      // 清除参数无值的情况
+      // 清除参数无值的情况，返回要查的参数page、size、sort和其他变量
       Object.keys(this.query).length !== 0 && Object.keys(this.query).forEach(item => {
         if (this.query[item] === null || this.query[item] === '') this.query[item] = undefined
       })
@@ -90,7 +91,7 @@ export default {
         ...this.params
       }
     },
-    // 改变页码
+    // 改变页码//每一个上面定义了的字段的更新，都需要调用init
     pageChange(e) {
       this.page = e - 1
       this.init()
@@ -117,6 +118,7 @@ export default {
     },
     /**
      * 通用的提示封装
+     * $notify是element UI带的
      */
     submitSuccessNotify() {
       this.$notify({
@@ -157,7 +159,7 @@ export default {
      * 删除前可以调用 beforeDelMethod 做一些操作
      */
     beforeDelMethod() {
-      return true
+      return true // 这里看似没有用，但是minix里的钩子函数可以更改这个值，从而使本文件使用这个方法的地方，可以有不同的判断
     },
     /**
      * 通用的删除
@@ -224,7 +226,7 @@ export default {
      */
     showAddFormDialog() {
       this.isAdd = true
-      this.resetForm = JSON.parse(JSON.stringify(this.form))
+      this.resetForm = JSON.parse(JSON.stringify(this.form)) // 浅复制this.form给restform，而this.form为{}，以此来达到重置表单的目的
       this.beforeShowAddForm()
       this.dialog = true
     },
@@ -248,7 +250,7 @@ export default {
      * 新增方法
      */
     addMethod() {
-      this.crudMethod.add(this.form).then(() => {
+      this.crudMethod.add(this.form).then(() => { // 为什么能通过this调用到crudMethod的？这里的this到底指谁？
         this.addSuccessNotify()
         this.loading = false
         this.afterAddMethod()

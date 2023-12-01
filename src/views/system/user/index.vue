@@ -60,15 +60,6 @@
           <crudOperation show="" :permission="permission">
             <span slot="left">
               <el-button
-                v-permission="['member:add']"
-                class="filter-item"
-                size="mini"
-                type="primary"
-                icon="el-icon-plus"
-                @click="showCreateMemberDialog"
-              >新增成员
-              </el-button>
-              <el-button
                 v-permission="['admin','user:add']"
                 :disabled="crud.selections.length === 0"
                 class="filter-item"

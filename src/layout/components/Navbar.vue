@@ -46,6 +46,7 @@
 </template>
 
 <script>
+// 引入模块
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -55,7 +56,7 @@ import Search from '@/components/HeaderSearch'
 import Avatar from '@/assets/images/avatar.png'
 
 export default {
-  components: {
+  components: { // 先引入，然后在这里局部注册
     Breadcrumb,
     Hamburger,
     Screenfull,
@@ -69,7 +70,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters([ // 通过mapGetters来映射vuex store里的值为计算属性，然后直接当做当前的计算属性用
       'sidebar',
       'device',
       'user',
@@ -103,7 +104,7 @@ export default {
     logout() {
       this.$store.dispatch('LogOut').then(() => {
         this.$router.push('/')
-        // location.reload()
+        location.reload()
       })
     }
   }

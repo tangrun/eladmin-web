@@ -52,7 +52,7 @@
         <el-table-column prop="changeTime" label="变更时间" />
         <el-table-column prop="changeContent" label="变更内容" />
         <el-table-column prop="changeFiles" label="变更文件" />
-        <el-table-column v-if="checkPer(['admin','change:edit','change:del'])" label="操作" width="150px" align="center">
+        <el-table-column v-if="checkPer(['admin','project:change:edit','project:change:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -81,14 +81,14 @@ export default {
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: 'change', url: 'api/change', idField: 'changeId', sort: 'changeId,desc', crudMethod: { ...crudChange }})
+    return CRUD({ title: 'change', url: 'api/project/change', idField: 'changeId', sort: 'changeId,desc', crudMethod: { ...crudChange }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'change:add'],
-        edit: ['admin', 'change:edit'],
-        del: ['admin', 'change:del']
+        add: ['admin', 'project:change:add'],
+        edit: ['admin', 'project:change:edit'],
+        del: ['admin', 'project:change:del']
       },
       rules: {
         projectId: [

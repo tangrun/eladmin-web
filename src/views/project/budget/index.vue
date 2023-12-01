@@ -44,7 +44,7 @@
         <el-table-column prop="remark" label="说明" />
         <!--<el-table-column prop="createBy" label="录入人" />-->
         <el-table-column prop="createTime" label="录入时间" />
-        <el-table-column v-if="checkPer(['admin','applicationBudget:edit','applicationBudget:del'])" label="操作" width="150px" align="center">
+        <el-table-column v-if="checkPer(['admin','project:budget:edit','project:budget:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -73,14 +73,14 @@ export default {
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: 'budget', url: 'api/applicationBudget', idField: 'budgetId', sort: 'budgetId,desc', crudMethod: { ...crudApplicationBudget }})
+    return CRUD({ title: 'budget', url: 'api/project/budget', idField: 'budgetId', sort: 'budgetId,desc', crudMethod: { ...crudApplicationBudget }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'applicationBudget:add'],
-        edit: ['admin', 'applicationBudget:edit'],
-        del: ['admin', 'applicationBudget:del']
+        add: ['admin', 'project:budget:add'],
+        edit: ['admin', 'project:budget:edit'],
+        del: ['admin', 'project:budget:del']
       },
       rules: {
         projectId: [

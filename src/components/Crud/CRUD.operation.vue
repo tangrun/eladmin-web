@@ -10,7 +10,7 @@
         size="mini"
         type="primary"
         icon="el-icon-plus"
-        @click="crud.toAdd"
+        @click="add"
       >
         新增
       </el-button>
@@ -102,7 +102,8 @@
 </template>
 <script>
 import CRUD, { crud } from '@crud/crud'
-
+// import { get_save_draft } from '@/utils/globalParam'
+// import { draft_test } from '@/views/project/plan/index.vue'
 function sortWithRef(src, ref) {
   const result = Object.assign([], ref)
   let cursor = -1
@@ -162,6 +163,9 @@ export default {
     this.crud.updateProp('searchToggle', true)
   },
   methods: {
+    add() {
+      this.crud.toAdd()
+    },
     updateTableColumns() {
       const table = this.crud.getTable()
       if (!table) {
@@ -195,6 +199,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        console.log(datas + 'tip====')
         this.crud.delAllLoading = true
         this.crud.doDelete(datas)
       }).catch(() => {

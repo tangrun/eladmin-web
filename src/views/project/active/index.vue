@@ -77,7 +77,7 @@
         </el-table-column>
         <!--<el-table-column prop="createBy" label="创建人" />-->
         <!--<el-table-column prop="createTime" label="创建时间" />-->
-        <el-table-column v-if="checkPer(['admin','active:edit','active:del'])" label="操作" width="150px" align="center">
+        <el-table-column v-if="checkPer(['admin','project:active:edit','project:active:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -106,20 +106,20 @@ export default {
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: 'active', url: 'api/active', idField: 'activeId', sort: 'activeId,desc', crudMethod: { ...crudActive }})
+    return CRUD({ title: 'active', url: 'api/project/active', idField: 'activeId', sort: 'activeId,desc', crudMethod: { ...crudActive }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'active:add'],
-        edit: ['admin', 'active:edit'],
-        del: ['admin', 'active:del']
+        add: ['admin', 'project:active:add'],
+        edit: ['admin', 'project:active:edit'],
+        del: ['admin', 'project:active:del']
       },
       rules: {
         projectId: [
           { required: true, message: '项目ID不能为空', trigger: 'blur' }
         ]
-      }    }
+      }}
   },
   methods: {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据

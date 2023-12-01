@@ -68,7 +68,7 @@
         <el-table-column prop="files" label="图片" />
         <!--<el-table-column prop="createBy" label="创建人" />-->
         <el-table-column prop="createTime" label="创建时间" />
-        <el-table-column v-if="checkPer(['admin','publicize:edit','publicize:del'])" label="操作" width="150px" align="center">
+        <el-table-column v-if="checkPer(['admin','project:publicize:edit','project:publicize:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -98,14 +98,14 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['media_level'],
   cruds() {
-    return CRUD({ title: 'publicize', url: 'api/publicize', idField: 'publicizeId', sort: 'publicizeId,desc', crudMethod: { ...crudPublicize }})
+    return CRUD({ title: 'publicize', url: 'api/project/publicize', idField: 'publicizeId', sort: 'publicizeId,desc', crudMethod: { ...crudPublicize }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'publicize:add'],
-        edit: ['admin', 'publicize:edit'],
-        del: ['admin', 'publicize:del']
+        add: ['admin', 'project:publicize:add'],
+        edit: ['admin', 'project:publicize:edit'],
+        del: ['admin', 'project:publicize:del']
       },
       rules: {
         publicizeId: [

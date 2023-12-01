@@ -54,7 +54,7 @@
     <!--表格渲染-->
     <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
       <el-table-column type="selection" width="55" />
-      <el-table-column prop="name" label="文件名">
+      <el-table-column prop="name" min-width="180" label="文件名">
         <template slot-scope="scope">
           <el-popover
             :content="'file/' + scope.row.type + '/' + scope.row.realName"
@@ -75,7 +75,7 @@
           </el-popover>
         </template>
       </el-table-column>
-      <el-table-column prop="path" label="预览图">
+      <el-table-column prop="path" width="60" label="预览图">
         <template slot-scope="{row}">
           <el-image
             :src=" baseApi + '/file/' + row.type + '/' + row.realName"
@@ -90,10 +90,11 @@
           </el-image>
         </template>
       </el-table-column>
-      <el-table-column prop="suffix" label="文件类型" />
+      <el-table-column prop="suffix" width="80" label="后缀名" />
+      <el-table-column prop="fileType" width="80" label="文件类型" />
       <el-table-column prop="type" label="类别" />
       <el-table-column prop="size" label="大小" />
-      <el-table-column prop="operate" label="操作人" />
+      <el-table-column prop="createBy" label="操作人" />
       <el-table-column prop="createTime" label="创建日期" />
     </el-table>
     <!--分页组件-->

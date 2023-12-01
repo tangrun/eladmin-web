@@ -1,35 +1,47 @@
 <template>
-  <el-date-picker v-model="datetime" v-bind="$attrs" type="datetimerange" v-on="$listeners" @input="onChange">
-    <template v-for="(slot, name) in $slots" :slot="name">
-      <slot :name="name" />
-    </template>
-  </el-date-picker>
+  <el-date-picker
+    v-model="datetime"
+    v-bind="$attrs"
+    type="datetimerange"
+    @input="onChange"
+  />
 </template>
 <script>
-import { DatePicker } from 'element-ui'
 
 export default {
   name: 'DateTimeRangePicker',
-  mixins: [DatePicker],
   props: {
-    startTime: Date,
-    endTime: Date
+    startTime: {
+      type: String | Object
+    },
+    endTime: {
+      type: String | Object
+    }
   },
   data: function() {
     return {
-      datetime: null
+      // datetime: []
     }
   },
-  methods: {
-    onChange(date) {
-      console.log(date)
-      if (date) {
-        this.$emit('update:startTime', date[0])
-        this.$emit('update:endTime', date[1])
+  computed: {
+    datetime() {
+      if (this.startTime && this.endTime) {
+        return [this.startTime, this.endTime]
       } else {
-        this.$emit('update:startTime', null)
-        this.$emit('update:endTime', null)
+        return []
       }
+    }
+  },
+
+  methods: {
+
+    onChange(value) {
+      this.$emit('input', value)
+      this.$emit('update:startTime', this.getArrayIndexValue(value, 0))
+      this.$emit('update:endTime', this.getArrayIndexValue(value, 1))
+    },
+    getArrayIndexValue(array, index) {
+      return array && array instanceof Array && array.length > index && index >= 0 ? array[index] : null
     }
   }
 }

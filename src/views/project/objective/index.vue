@@ -7,37 +7,37 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="自评ID">
-            <el-input v-model="form.selfId" style="width: 370px;" />
+          <el-form-item label="ID">
+            <el-input v-model="form.planId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="项目ID" prop="projectId">
             <el-input v-model="form.projectId" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="评估期">
-            <el-input v-model="form.interim" style="width: 370px;" />
+          <el-form-item label="目标名称" prop="name">
+            <el-input v-model="form.name" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="项目执行总结">
-            <el-input v-model="form.summary" style="width: 370px;" />
+          <el-form-item label="目标阶段：投入、产出、影响、成效">
+            <el-radio v-for="item in dict.target_status" :key="item.id" v-model="form.targetType" :label="item.value">{{ item.label }}</el-radio>
           </el-form-item>
-          <el-form-item label="下一步工作安排记建议">
-            <el-input v-model="form.nextRule" style="width: 370px;" />
+          <el-form-item label="目标值">
+            <el-input v-model="form.targetNum" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="项目创新性">
-            <el-input v-model="form.innovation" style="width: 370px;" />
+          <el-form-item label="权重">
+            <el-input v-model="form.weight" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="项目可持续性">
-            <el-input v-model="form.continuity" style="width: 370px;" />
+          <el-form-item label="开始时间">
+            <el-input v-model="form.startTime" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="项目特色、高点">
-            <el-input v-model="form.characteristic" style="width: 370px;" />
+          <el-form-item label="结束时间">
+            <el-input v-model="form.endTime" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="项目反思">
-            <el-input v-model="form.reflect" style="width: 370px;" />
+          <el-form-item label="备注">
+            <el-input v-model="form.remark" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="创建者">
+          <el-form-item label="录入人">
             <el-input v-model="form.createBy" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="创建日期">
+          <el-form-item label="录入时间">
             <el-input v-model="form.createTime" style="width: 370px;" />
           </el-form-item>
         </el-form>
@@ -49,18 +49,22 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <!--<el-table-column prop="selfId" label="自评ID" />-->
+        <!--<el-table-column prop="planId" label="ID" />-->
         <!--<el-table-column prop="projectId" label="项目ID" />-->
-        <el-table-column prop="interim" label="评估期" />
-        <el-table-column prop="summary" label="项目执行总结" />
-        <el-table-column prop="nextRule" label="下一步工作安排记建议" />
-        <el-table-column prop="innovation" label="项目创新性" />
-        <el-table-column prop="continuity" label="项目可持续性" />
-        <el-table-column prop="characteristic" label="项目特色、高点" />
-        <el-table-column prop="reflect" label="项目反思" />
-        <el-table-column prop="createBy" label="创建者" />
-        <el-table-column prop="createTime" label="创建日期" />
-        <el-table-column v-if="checkPer(['admin','project:self:edit','project:self:del'])" label="操作" width="150px" align="center">
+        <el-table-column prop="name" label="目标名称" />
+        <el-table-column prop="targetType" label="目标阶段">
+          <template slot-scope="scope">
+            {{ dict.label.target_status[scope.row.targetType] }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="targetNum" label="目标值" />
+        <el-table-column prop="weight" label="权重" />
+        <el-table-column prop="startTime" label="开始时间" />
+        <el-table-column prop="endTime" label="结束时间" />
+        <el-table-column prop="remark" label="备注" />
+        <el-table-column prop="createBy" label="录入人" />
+        <el-table-column prop="createTime" label="录入时间" />
+        <el-table-column v-if="checkPer(['admin','project:objective:edit','project:objective:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -76,31 +80,35 @@
 </template>
 
 <script>
-import crudProjectSelf from '@/api/project/self'
+import crudProjectApplicationPlan from '@/api/project/plan'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
 import pagination from '@crud/Pagination'
 
-const defaultForm = { selfId: null, projectId: null, interim: null, summary: null, nextRule: null, innovation: null, continuity: null, characteristic: null, reflect: null, createBy: null, createTime: null }
+const defaultForm = { planId: null, projectId: null, name: null, targetType: null, targetNum: null, weight: null, startTime: null, endTime: null, remark: null, createBy: null, createTime: null }
 export default {
-  name: 'ProjectSelf',
+  name: 'ProjectApplicationPlan',
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
+  dicts: ['target_status'],
   cruds() {
-    return CRUD({ title: 'project', url: 'api/project/self', idField: 'selfId', sort: 'selfId,desc', crudMethod: { ...crudProjectSelf }})
+    return CRUD({ title: 'plan', url: 'api/project/objective', idField: 'planId', sort: 'planId,desc', crudMethod: { ...crudProjectApplicationPlan }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'project:self:add'],
-        edit: ['admin', 'project:self:edit'],
-        del: ['admin', 'project:self:del']
+        add: ['admin', 'project:objective:add'],
+        edit: ['admin', 'project:objective:edit'],
+        del: ['admin', 'project:objective:del']
       },
       rules: {
         projectId: [
           { required: true, message: '项目ID不能为空', trigger: 'blur' }
+        ],
+        name: [
+          { required: true, message: '目标名称不能为空', trigger: 'blur' }
         ]
       }
     }

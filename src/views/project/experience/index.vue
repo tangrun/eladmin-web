@@ -55,7 +55,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="files" label="项目佐证" />
-        <el-table-column v-if="checkPer(['admin','projectExperience:edit','projectExperience:del'])" label="操作" width="150px" align="center">
+        <el-table-column v-if="checkPer(['admin','project:experience:edit','project:experience:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -85,14 +85,14 @@ export default {
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['execution_status'],
   cruds() {
-    return CRUD({ title: 'experience', url: 'api/projectExperience', idField: 'experienceId', sort: 'experienceId,desc', crudMethod: { ...crudProjectExperience }})
+    return CRUD({ title: 'experience', url: 'api/project/experience', idField: 'experienceId', sort: 'experienceId,desc', crudMethod: { ...crudProjectExperience }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'projectExperience:add'],
-        edit: ['admin', 'projectExperience:edit'],
-        del: ['admin', 'projectExperience:del']
+        add: ['admin', 'project:experience:add'],
+        edit: ['admin', 'project:experience:edit'],
+        del: ['admin', 'project:experience:del']
       },
       rules: {
         projectId: [

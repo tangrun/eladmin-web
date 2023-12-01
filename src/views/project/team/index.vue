@@ -72,7 +72,7 @@
         <el-table-column prop="remark" label="备注" />
         <!--<el-table-column prop="createBy" label="录入人" />-->
         <!--<el-table-column prop="createTime" label="录入时间" />-->
-        <el-table-column v-if="checkPer(['admin','applicationTeam:edit','applicationTeam:del'])" label="操作" width="150px" align="center">
+        <el-table-column v-if="checkPer(['admin','project:team:edit','project:team:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -101,14 +101,14 @@ export default {
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: 'team', url: 'api/applicationTeam', idField: 'memberId', sort: 'memberId,desc', crudMethod: { ...crudApplicationTeam }})
+    return CRUD({ title: 'team', url: 'api/project/team', idField: 'memberId', sort: 'memberId,desc', crudMethod: { ...crudApplicationTeam }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'applicationTeam:add'],
-        edit: ['admin', 'applicationTeam:edit'],
-        del: ['admin', 'applicationTeam:del']
+        add: ['admin', 'project:team:add'],
+        edit: ['admin', 'project:team:edit'],
+        del: ['admin', 'project:team:del']
       },
       rules: {
         name: [

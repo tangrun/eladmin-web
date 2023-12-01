@@ -52,7 +52,7 @@
         <el-table-column prop="files" label="图片" />
         <el-table-column prop="createBy" label="督导老师" />
         <el-table-column prop="createTime" label="督导时间" />
-        <el-table-column v-if="checkPer(['admin','projectSupervise:edit','projectSupervise:del'])" label="操作" width="150px" align="center">
+        <el-table-column v-if="checkPer(['admin','project:supervise:edit','project:supervise:del'])" label="操作" width="150px" align="center">
           <template slot-scope="scope">
             <udOperation
               :data="scope.row"
@@ -81,14 +81,14 @@ export default {
   components: { pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   cruds() {
-    return CRUD({ title: 'project', url: 'api/projectSupervise', idField: 'superviseId', sort: 'superviseId,desc', crudMethod: { ...crudProjectSupervise }})
+    return CRUD({ title: 'project', url: 'api/project/supervise', idField: 'superviseId', sort: 'superviseId,desc', crudMethod: { ...crudProjectSupervise }})
   },
   data() {
     return {
       permission: {
-        add: ['admin', 'projectSupervise:add'],
-        edit: ['admin', 'projectSupervise:edit'],
-        del: ['admin', 'projectSupervise:del']
+        add: ['admin', 'project:supervise:add'],
+        edit: ['admin', 'project:supervise:edit'],
+        del: ['admin', 'project:supervise:del']
       },
       rules: {
         projectId: [
